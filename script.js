@@ -1,52 +1,21 @@
+// Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-    // Handle Sidebar Buttons
-    const sidebarBtns = document.querySelectorAll('.sidebar-btn');
-    sidebarBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all
-            sidebarBtns.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked
-            btn.classList.add('active');
-            console.log(`Selected sidebar category: ${btn.id}`);
-        });
-    });
+    // The CSS animation handles the sun moving automatically
+    // The hover and focus interactions for the inputs are handled in CSS as well.
+    // If any vanilla JS interactions are explicitly needed for form submissions:
+    const usernameInput = document.querySelector('.username-input .text-input');
+    const passwordInput = document.querySelector('.password-input .text-input');
 
-    // Handle Tab Buttons
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all
-            tabBtns.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked
-            btn.classList.add('active');
-            console.log(`Selected tab: ${btn.textContent}`);
-        });
-    });
-
-    // Handle Grid Items (Customization Options)
-    const gridItems = document.querySelectorAll('.grid-item');
-    gridItems.forEach((item, index) => {
-        item.addEventListener('click', () => {
-            console.log(`Selected grid item ${index + 1}`);
-            // Provide simple visual feedback
-            gridItems.forEach(i => i.style.border = 'none');
-            item.style.border = '2px solid #3182ce';
-        });
-    });
-
-    // Handle Undo/Redo Buttons
-    const undoBtn = document.querySelector('.undo-btn');
-    const redoBtn = document.querySelector('.redo-btn');
-
-    if (undoBtn) {
-        undoBtn.addEventListener('click', () => {
-            console.log('Undo clicked');
+    // Add simple logging to show JS functionality for the "typing in it" request (though standard HTML inputs handle this)
+    if(usernameInput) {
+        usernameInput.addEventListener('input', (e) => {
+            console.log("Username input changed:", e.target.value);
         });
     }
 
-    if (redoBtn) {
-        redoBtn.addEventListener('click', () => {
-            console.log('Redo clicked');
+    if(passwordInput) {
+        passwordInput.addEventListener('input', (e) => {
+            console.log("Password input changed length:", e.target.value.length);
         });
     }
 });
