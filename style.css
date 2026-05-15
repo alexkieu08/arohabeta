@@ -105,7 +105,7 @@ body {
 /* Login Section */
 .login-section {
     position: absolute;
-    top: 280px;
+    top: 250px;
     left: 180px;
     z-index: 3;
     display: flex;
