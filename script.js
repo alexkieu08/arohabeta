@@ -1,4 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Login Screen Logic
+    const usernameInput = document.querySelector('.username-input .text-input');
+    const passwordInput = document.querySelector('.password-input .text-input');
+    const loginScreen = document.getElementById('login-screen');
+    const customizerScreen = document.getElementById('customizer-screen');
+
+    if(usernameInput) {
+        usernameInput.addEventListener('input', (e) => {
+            console.log("Username input changed:", e.target.value);
+        });
+    }
+
+    if(passwordInput) {
+        passwordInput.addEventListener('input', (e) => {
+            console.log("Password input changed length:", e.target.value.length);
+        });
+
+        // Handle login on Enter key
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                console.log('Login triggered!');
+
+                // Transfer username to the character customizer
+                const nameInput = document.querySelector('.name-input');
+                if (nameInput && usernameInput) {
+                    nameInput.value = usernameInput.value;
+                }
+
+                // Hide login, show customizer
+                if (loginScreen && customizerScreen) {
+                    loginScreen.style.display = 'none';
+                    customizerScreen.style.display = 'flex';
+                }
+            }
+        });
+    }
+
+    // Customizer Screen Logic
     // Handle Sidebar Buttons
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     sidebarBtns.forEach(btn => {
