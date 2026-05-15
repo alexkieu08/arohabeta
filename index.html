@@ -3,121 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Character Customizer</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="profile-section">
-                <div class="profile-avatar">
-                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" alt="John Doe">
+        <div class="browser-header">
+            <div class="browser-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="left-panel">
+                <h1 class="main-title">Firstly, bring your study buddy to life! ✨</h1>
+
+                <div class="character-container">
+                    <div class="text-bubble">
+                        <span>Hello! my name is</span> <input type="text" class="name-input" placeholder="___">
+                        <div class="bubble-tail"></div>
+                    </div>
+                    <div class="character-wrapper">
+                        <svg viewBox="0 0 200 250" width="100%" height="100%">
+                            <!-- Left Arm -->
+                            <path d="M 60 170 Q 40 180 30 160 Q 40 150 70 140" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Right Arm (Waving) -->
+                            <g class="waving-arm" transform-origin="140 140">
+                                <path d="M 140 150 Q 180 130 190 140 Q 180 160 140 170" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+                            </g>
+
+                            <!-- Left Leg -->
+                            <path d="M 70 200 L 60 240 Q 70 250 80 240 L 90 200" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Right Leg -->
+                            <path d="M 130 200 L 140 240 Q 130 250 120 240 L 110 200" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Body -->
+                            <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Head -->
+                            <ellipse cx="100" cy="90" rx="60" ry="50" fill="white" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Eyes -->
+                            <path d="M 70 85 Q 75 75 85 85" fill="none" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M 115 85 Q 125 75 130 85" fill="none" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>
+
+                            <!-- Blush -->
+                            <ellipse cx="65" cy="100" rx="8" ry="4" fill="#fca5a5" transform="rotate(-15 65 100)" opacity="0.8"/>
+                            <ellipse cx="135" cy="100" rx="8" ry="4" fill="#fca5a5" transform="rotate(15 135 100)" opacity="0.8"/>
+
+                            <!-- Smile -->
+                            <path d="M 90 110 Q 100 115 110 110" fill="none" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="shadow"></div>
                 </div>
-                <div class="profile-info">
-                    <h2 class="profile-name">John Doe</h2>
-                    <span class="profile-plan">Premium Plan</span>
-                </div>
+
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                    <span>Browse</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <span>History</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span>Settings</span>
-                </a>
-            </nav>
-
-            <div class="upgrade-section">
-                <button class="upgrade-btn" id="upgradeBtn">Upgrade Plan</button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Navbar -->
-            <header class="top-navbar">
-                <div class="search-container">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" class="search-input" placeholder="Search models, tutorials, and more...">
-                </div>
-                <div class="navbar-actions">
-                    <button class="bell-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                        <span class="notification-dot"></span>
+            <div class="middle-panel">
+                <div class="sidebar-buttons">
+                    <button class="sidebar-btn active" id="btn-body">
+                        <!-- Icon: Body -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" stroke-width="2"><path d="M12 4a2 2 0 100-4 2 2 0 000 4z"/><path d="M9 10v8h2v5h2v-5h2v-8c0-1.5-1-3-2.5-3h-3C9.5 7 8.5 8.5 8.5 10v3H7v-3c0-2.5 1.5-4.5 3.5-4.5h3c2 0 3.5 2 3.5 4.5v3h-1.5v-3c0-1.5-.5-3-1.5-3h-1c-.5 0-1 .5-1 1v7H11v-7c0-.5-.5-1-1-1h-1z"/></svg>
                     </button>
-                    <div class="navbar-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Avatar&background=random" alt="Avatar">
-                    </div>
+                    <button class="sidebar-btn" id="btn-clothes">
+                        <!-- Icon: Clothes -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" stroke-width="2"><path d="M15 4l1 3 4 1v4l-2 1v9H6v-9l-2-1V8l4-1 1-3h6z"/><path d="M9 4v3h6V4"/></svg>
+                    </button>
+                    <button class="sidebar-btn" id="btn-face">
+                        <!-- Icon: Face -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    </button>
+                    <button class="sidebar-btn" id="btn-details">
+                        <!-- Icon: ID/Details -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="9" x2="19" y2="9"/><line x1="15" y1="13" x2="19" y2="13"/><line x1="5" y1="16" x2="19" y2="16"/></svg>
+                    </button>
+                    <button class="sidebar-btn" id="btn-accessories">
+                        <!-- Icon: Accessories/Guitar -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" stroke-width="2"><path d="M9 18c-2 0-4-1-4-3s1-4 3-4 4 1 4 3-1 4-3 4z"/><path d="M11 15l8-8 2 2-8 8"/><circle cx="17" cy="7" r="1"/></svg>
+                    </button>
                 </div>
-            </header>
+            </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
-                <h1 class="welcome-title">Welcome back, John!</h1>
-
-                <div class="content-grid">
-                    <!-- Featured Collection -->
-                    <div class="featured-card">
-                        <div class="featured-image-placeholder">
-                            <!-- Placeholder for Sci-Fi Vehicles -->
-                            <div class="drone-placeholder"></div>
-                        </div>
-                        <div class="featured-info">
-                            <span class="featured-tag">FEATURED COLLECTION</span>
-                            <h3 class="featured-title">Sci-Fi Vehicles</h3>
-                            <a href="#" class="view-collection">View Collection ➔</a>
-                        </div>
+            <div class="right-panel">
+                <div class="customizer-box">
+                    <div class="tabs">
+                        <button class="tab-btn active">body type</button>
+                        <button class="tab-btn">skin color</button>
+                        <button class="tab-btn">face shape</button>
+                        <button class="tab-btn">eyes</button>
                     </div>
-
-                    <!-- Recent Activity -->
-                    <div class="recent-activity-section">
-                        <h3 class="recent-activity-title">Recent Activity</h3>
-                        <ul class="activity-list">
-                            <li class="activity-item">
-                                <div class="activity-thumb">
-                                    <div class="thumb-placeholder"></div>
-                                </div>
-                                <div class="activity-details">
-                                    <h4 class="activity-name">Cyberpunk City</h4>
-                                    <span class="activity-time">2 hours ago</span>
-                                </div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-thumb">
-                                    <div class="thumb-placeholder"></div>
-                                </div>
-                                <div class="activity-details">
-                                    <h4 class="activity-name">Mecha Robot V2</h4>
-                                    <span class="activity-time">5 hours ago</span>
-                                </div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-thumb">
-                                    <div class="thumb-placeholder"></div>
-                                </div>
-                                <div class="activity-details">
-                                    <h4 class="activity-name">Hover Car Model</h4>
-                                    <span class="activity-time">1 day ago</span>
-                                </div>
-                            </li>
-                        </ul>
+                    <div class="grid">
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
                     </div>
                 </div>
             </div>
-        </main>
+
+            <button class="bottom-btn undo-btn">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#b08b5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 10h10a5 5 0 0 1 5 5v2a5 5 0 0 1-5 5H8" />
+                    <polyline points="7 6 3 10 7 14" />
+                </svg>
+            </button>
+            <button class="bottom-btn redo-btn">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#b08b5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10H11a5 5 0 0 0-5 5v2a5 5 0 0 0 5 5h5" />
+                    <polyline points="17 6 21 10 17 14" />
+                </svg>
+            </button>
+        </div>
     </div>
     
     <script src="script.js"></script>
