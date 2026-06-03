@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let state = {
         skinColor: '#ffffff',
         bodyType: 'standard', // 'standard', 'chubby', 'tall', 'tiny'
+        hair: 'bald',         // 'bald', 'fluffy', 'pigtails', 'spiky', 'bun', 'afro'
         eyes: 'curved',       // 'curved', 'open', 'sleepy', 'wink', 'heart'
         smile: 'standard',    // 'standard', 'laughing', 'flat', 'surprise', 'cat'
         name: ''
@@ -30,6 +31,40 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'tall', name: 'Tall', transform: 'scale(0.88, 1.15)', svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
         { id: 'tiny', name: 'Tiny', transform: 'scale(0.8)', svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' }
     ];
+
+    const hairOptions = {
+        bald: {
+            name: 'Bald',
+            svg: ''
+        },
+        fluffy: {
+            name: 'Fluffy Hair',
+            svg: `<path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z" fill="#4a5568" stroke="#2d3748" stroke-width="2"/>`
+        },
+        pigtails: {
+            name: 'Pigtails',
+            svg: `<g fill="#b5835a" stroke="#7f5539" stroke-width="2">
+                     <circle cx="33" cy="65" r="16"/>
+                     <circle cx="167" cy="65" r="16"/>
+                     <path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z"/>
+                   </g>`
+        },
+        spiky: {
+            name: 'Spiky Cool',
+            svg: `<path d="M 42 75 Q 40 30 65 35 Q 80 20 95 32 Q 110 20 125 35 Q 150 25 158 75 Q 140 62 120 64 Q 100 52 80 64 Q 60 62 42 75 Z" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>`
+        },
+        bun: {
+            name: 'Top Bun',
+            svg: `<g fill="#1e293b" stroke="#0f172a" stroke-width="2">
+                     <circle cx="100" cy="28" r="18"/>
+                     <path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z"/>
+                   </g>`
+        },
+        afro: {
+            name: 'Curly Afro',
+            svg: `<path d="M 45 75 Q 26 58 32 42 Q 42 16 70 22 Q 100 10 130 22 Q 158 16 168 42 Q 174 58 155 75 Q 140 68 130 70 Q 100 60 70 70 Q 60 68 45 75 Z" fill="#27272a" stroke="#09090b" stroke-width="2"/>`
+        }
+    };
 
     const eyesOptions = {
         curved: {
@@ -90,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
     
-    // Sidebar Button Selection (Visual Placeholder / Setup)
+    // Sidebar Button Selection
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     sidebarBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -99,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Switch tabs depending on category selected
             if (btn.id === 'btn-body') {
-                updateTabs(['Body Type', 'Skin Color', 'Face Shape', 'Eyes']);
+                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Face Shape', 'Eyes']);
             } else {
                 // Return placeholder tabs for other sections
                 updateTabs(['Style 1', 'Style 2', 'Color Details']);
@@ -113,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabsContainer.innerHTML = '';
         tabNames.forEach((name, index) => {
             const button = document.createElement('button');
-            button.className = `tab-btn${index === 0 ? ' active' : ''}`;
+            button.className = `tab-btn${index === 1 ? ' active' : ''}`; // Default to Skin Color (second tab)
             button.textContent = name;
             button.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -122,8 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             tabsContainer.appendChild(button);
         });
-        // Render first tab
-        renderGrid(tabNames[0].toLowerCase());
+        // Render Skin Color by default if it is available, otherwise the first tab
+        const defaultTab = tabNames.includes('Skin Color') ? 'skin color' : tabNames[0].toLowerCase();
+        renderGrid(defaultTab);
     }
 
     // Save state to Undo/Redo history
@@ -159,13 +195,19 @@ document.addEventListener('DOMContentLoaded', () => {
             characterWrapper.style.transformOrigin = 'bottom center';
         }
 
-        // 3. Eyes
+        // 3. Hair
+        const hairContainer = document.getElementById('hair-container');
+        if (hairContainer) {
+            hairContainer.innerHTML = hairOptions[state.hair].svg;
+        }
+
+        // 4. Eyes
         const eyesContainer = document.getElementById('eyes-container');
         if (eyesContainer && eyesOptions[state.eyes]) {
             eyesContainer.innerHTML = eyesOptions[state.eyes].svg;
         }
 
-        // 4. Smile
+        // 5. Smile
         const smileContainer = document.getElementById('smile-container');
         if (smileContainer && smileOptions[state.smile]) {
             smileContainer.innerHTML = smileOptions[state.smile].svg;
@@ -244,6 +286,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridContainer.appendChild(item);
             });
         } 
+        else if (tabName === 'hair') {
+            Object.keys(hairOptions).forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                if (state.hair === key) item.classList.add('active');
+
+                // Render visual preview: dummy head + hair
+                const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svgPreview.setAttribute('viewBox', '35 20 130 65');
+                svgPreview.setAttribute('width', '100%');
+                svgPreview.setAttribute('height', '100%');
+                svgPreview.style.marginTop = '-5px';
+                svgPreview.innerHTML = `
+                    <ellipse cx="100" cy="90" rx="60" ry="50" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                    ${hairOptions[key].svg}
+                `;
+                item.appendChild(svgPreview);
+
+                const label = document.createElement('span');
+                label.className = 'preview-label';
+                label.style.position = 'absolute';
+                label.style.bottom = '4px';
+                label.style.fontSize = '10px';
+                label.style.fontWeight = 'bold';
+                label.style.color = '#475569';
+                label.textContent = hairOptions[key].name;
+                item.appendChild(label);
+
+                item.addEventListener('click', () => {
+                    if (state.hair !== key) {
+                        state.hair = key;
+                        renderCharacter();
+                        saveHistory();
+                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+                gridContainer.appendChild(item);
+            });
+        }
         else if (tabName === 'eyes') {
             Object.keys(eyesOptions).forEach(key => {
                 const item = document.createElement('div');
