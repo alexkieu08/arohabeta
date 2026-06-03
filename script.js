@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         skinColor: '#ffffff',
         bodyType: 'standard', // 'standard', 'chubby', 'tall', 'tiny'
         hair: 'bald',         // 'bald', 'fluffy', 'pigtails', 'spiky', 'bun', 'afro'
+        hairColor: '#94a3b8', // Default grey hair color
         eyes: 'curved',       // 'curved', 'open', 'sleepy', 'wink', 'heart'
         smile: 'standard',    // 'standard', 'laughing', 'flat', 'surprise', 'cat'
         name: ''
@@ -38,33 +39,49 @@ document.addEventListener('DOMContentLoaded', () => {
             svg: ''
         },
         fluffy: {
-            name: 'Fluffy Hair',
-            svg: `<path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z" fill="#4a5568" stroke="#2d3748" stroke-width="2"/>`
+            name: 'Fluffy Bob',
+            svg: `<path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
         },
         pigtails: {
             name: 'Pigtails',
-            svg: `<g fill="#b5835a" stroke="#7f5539" stroke-width="2">
+            svg: `<g fill="#94a3b8" stroke="#334155" stroke-width="2">
                      <circle cx="33" cy="65" r="16"/>
                      <circle cx="167" cy="65" r="16"/>
-                     <path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z"/>
+                     <circle cx="38" cy="60" r="4" fill="#f43f5e" data-accessory="true"/>
+                     <circle cx="162" cy="60" r="4" fill="#f43f5e" data-accessory="true"/>
+                     <path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z"/>
                    </g>`
         },
         spiky: {
-            name: 'Spiky Cool',
-            svg: `<path d="M 42 75 Q 40 30 65 35 Q 80 20 95 32 Q 110 20 125 35 Q 150 25 158 75 Q 140 62 120 64 Q 100 52 80 64 Q 60 62 42 75 Z" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>`
+            name: 'Messy Spiky',
+            svg: `<path d="M 40 75 Q 35 25 60 30 Q 75 15 95 28 Q 115 12 135 30 Q 155 18 160 75 Q 140 60 120 62 Q 100 48 80 62 Q 60 60 40 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
         },
         bun: {
-            name: 'Top Bun',
-            svg: `<g fill="#1e293b" stroke="#0f172a" stroke-width="2">
-                     <circle cx="100" cy="28" r="18"/>
-                     <path d="M 42 75 Q 40 30 100 30 Q 160 30 158 75 Q 140 60 120 65 Q 100 55 80 65 Q 60 60 42 75 Z"/>
+            name: 'Space Buns',
+            svg: `<g fill="#94a3b8" stroke="#334155" stroke-width="2">
+                     <circle cx="50" cy="28" r="16"/>
+                     <circle cx="150" cy="28" r="16"/>
+                     <path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z"/>
                    </g>`
         },
         afro: {
             name: 'Curly Afro',
-            svg: `<path d="M 45 75 Q 26 58 32 42 Q 42 16 70 22 Q 100 10 130 22 Q 158 16 168 42 Q 174 58 155 75 Q 140 68 130 70 Q 100 60 70 70 Q 60 68 45 75 Z" fill="#27272a" stroke="#09090b" stroke-width="2"/>`
+            svg: `<path d="M 45 75 Q 24 55 30 38 Q 40 12 70 18 Q 100 6 130 18 Q 160 12 170 38 Q 176 55 155 75 Q 140 68 130 70 Q 100 60 70 70 Q 60 68 45 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
         }
     };
+
+    const hairColors = [
+        { name: 'Sleek Grey', value: '#94a3b8' },
+        { name: 'Dark Slate', value: '#1e293b' },
+        { name: 'Pastel Blonde', value: '#fef08a' },
+        { name: 'Ginger Auburn', value: '#d97706' },
+        { name: 'Soft Brown', value: '#854d0e' },
+        { name: 'Pastel Pink', value: '#f472b6' },
+        { name: 'Lavender Violet', value: '#c084fc' },
+        { name: 'Pastel Mint', value: '#a7f3d0' },
+        { name: 'Sky Blue', value: '#60a5fa' },
+        { name: 'Winter White', value: '#f8fafc' }
+    ];
 
     const eyesOptions = {
         curved: {
@@ -134,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Switch tabs depending on category selected
             if (btn.id === 'btn-body') {
-                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Face Shape', 'Eyes']);
+                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes']);
             } else {
                 // Return placeholder tabs for other sections
                 updateTabs(['Style 1', 'Style 2', 'Color Details']);
@@ -173,13 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUndoRedoButtons();
     }
 
-    function updateUndoRedoButtons() {
-        const undoBtn = document.querySelector('.undo-btn');
-        const redoBtn = document.querySelector('.redo-btn');
-        if (undoBtn) undoBtn.style.opacity = historyIndex > 0 ? '1' : '0.3';
-        if (redoBtn) redoBtn.style.opacity = historyIndex < historyStack.length - 1 ? '1' : '0.3';
-    }
-
     // Render the character according to the state object
     function renderCharacter(isLoad = false) {
         // 1. Skin Color
@@ -195,10 +205,18 @@ document.addEventListener('DOMContentLoaded', () => {
             characterWrapper.style.transformOrigin = 'bottom center';
         }
 
-        // 3. Hair
+        // 3. Hair (with dynamic hair coloring support)
         const hairContainer = document.getElementById('hair-container');
         if (hairContainer) {
             hairContainer.innerHTML = hairOptions[state.hair].svg;
+            
+            // Apply current hair color to the paths/circles in the hair container
+            const hairElements = hairContainer.querySelectorAll('path, circle, ellipse, rect, polygon');
+            hairElements.forEach(el => {
+                if (el.getAttribute('data-accessory') !== 'true') {
+                    el.style.fill = state.hairColor;
+                }
+            });
         }
 
         // 4. Eyes
@@ -221,6 +239,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function updateUndoRedoButtons() {
+        const undoBtn = document.querySelector('.undo-btn');
+        const redoBtn = document.querySelector('.redo-btn');
+        if (undoBtn) undoBtn.style.opacity = historyIndex > 0 ? '1' : '0.3';
+        if (redoBtn) redoBtn.style.opacity = historyIndex < historyStack.length - 1 ? '1' : '0.3';
+    }
+
     // Function to render the Grid based on active tab
     function renderGrid(tabName) {
         gridContainer.innerHTML = ''; // Clear current grid
@@ -241,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         state.skinColor = color.value;
                         renderCharacter();
                         saveHistory();
-                        // Update active grid selection class
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
                     }
@@ -292,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.className = 'grid-item';
                 if (state.hair === key) item.classList.add('active');
 
-                // Render visual preview: dummy head + hair
+                // Render visual preview: dummy head + hair styled in current hair color
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '35 20 130 65');
                 svgPreview.setAttribute('width', '100%');
@@ -302,6 +326,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <ellipse cx="100" cy="90" rx="60" ry="50" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
                     ${hairOptions[key].svg}
                 `;
+                
+                // Colorize the preview hair paths to the currently active hair color
+                const previewHairPaths = svgPreview.querySelectorAll('path, circle, ellipse');
+                previewHairPaths.forEach(el => {
+                    if (el.getAttribute('data-accessory') !== 'true') {
+                        el.style.fill = state.hairColor;
+                    }
+                });
                 item.appendChild(svgPreview);
 
                 const label = document.createElement('span');
@@ -317,6 +349,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hair !== key) {
                         state.hair = key;
+                        renderCharacter();
+                        saveHistory();
+                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+                gridContainer.appendChild(item);
+            });
+        }
+        else if (tabName === 'hair color') {
+            hairColors.forEach(color => {
+                const item = document.createElement('div');
+                item.className = 'grid-item color-swatch-item';
+                if (state.hairColor === color.value) item.classList.add('active');
+
+                const circle = document.createElement('div');
+                circle.className = 'color-circle';
+                circle.style.backgroundColor = color.value;
+                item.appendChild(circle);
+
+                item.addEventListener('click', () => {
+                    if (state.hairColor !== color.value) {
+                        state.hairColor = color.value;
                         renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
