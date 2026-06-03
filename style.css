@@ -231,10 +231,50 @@ body {
     aspect-ratio: 1; /* square */
     border-radius: 8px;
     cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .grid-item:hover {
     background-color: #d1d5db;
+    transform: scale(1.05);
+}
+
+.grid-item.active {
+    border-color: #3182ce;
+    background-color: #ebf8ff;
+    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.4);
+}
+
+/* Color Swatches style */
+.color-circle {
+    width: 65%;
+    height: 65%;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.grid-item:hover .color-circle {
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scale(1.15, 0.85); }
+    50% { transform: scale(0.9, 1.1); }
+    70% { transform: scale(1.05, 0.95); }
+}
+
+.bounce-animation {
+    animation: bounce 0.45s ease-out;
 }
 
 /* Bottom Controls */
