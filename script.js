@@ -382,13 +382,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle name input to keep text bubble updated and adjust width
+    // Handle name input to keep text bubble updated and adjust width perfectly
     if (nameInput) {
+        // Create hidden mirror span for measuring text width
+        const mirror = document.createElement('span');
+        mirror.style.position = 'absolute';
+        mirror.style.visibility = 'hidden';
+        mirror.style.whiteSpace = 'pre';
+        mirror.style.fontFamily = getComputedStyle(nameInput).fontFamily;
+        mirror.style.fontSize = getComputedStyle(nameInput).fontSize;
+        mirror.style.fontWeight = getComputedStyle(nameInput).fontWeight;
+        mirror.style.letterSpacing = getComputedStyle(nameInput).letterSpacing;
+        document.body.appendChild(mirror);
+
+        const resizeInput = () => {
+            const val = nameInput.value || nameInput.placeholder || '___';
+            mirror.textContent = val;
+            // Add a small safety padding to prevent scrollbars or clipping
+            nameInput.style.width = (mirror.offsetWidth + 6) + 'px';
+        };
+
         nameInput.addEventListener('input', (e) => {
             state.name = e.target.value;
-            const len = e.target.value.length || 3;
-            e.target.style.width = (len * 12 + 10) + 'px';
+            resizeInput();
         });
+
+        // Initial run to size the placeholder correctly
+        resizeInput();
     }
 
     // Save initial state into history

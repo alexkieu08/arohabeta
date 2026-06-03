@@ -134,6 +134,20 @@ body {
     animation: wave 2s infinite ease-in-out;
 }
 
+@keyframes idle-breath {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(1.5px) scale(1.015, 0.985);
+    }
+}
+
+.character-upper-body {
+    transform-origin: 100px 200px;
+    animation: idle-breath 4s infinite ease-in-out;
+}
+
 .shadow {
     width: 150px;
     height: 30px;
