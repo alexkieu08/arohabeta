@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hairColor: '#94a3b8', // Default grey hair color
         eyes: 'curved',       // 'curved', 'open', 'sleepy', 'wink', 'heart'
         smile: 'standard',    // 'standard', 'laughing', 'flat', 'surprise', 'cat'
+        clothes: 'none',      // 'none', 'tshirt', 'tanktop', 'hoodie', 'vneck'
+        clothesColor: '#94a3b8',
         name: ''
     };
 
@@ -136,6 +138,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const clothesOptions = {
+        'style 1': [
+            { id: 'none', name: 'None', body: '', lArm: '', rArm: '' },
+            {
+                id: 'tshirt',
+                name: 'Basic Tee',
+                body: '<path d="M 70 140 Q 100 130 130 140 L 130 180 Q 100 190 70 180 Z" stroke-width="1"/>',
+                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165" stroke-width="1"/>',
+                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165" stroke-width="1"/>'
+            },
+            {
+                id: 'tanktop',
+                name: 'Tank Top',
+                body: '<path d="M 80 140 Q 100 135 120 140 L 120 190 Q 100 200 80 190 Z" stroke-width="1"/>',
+                lArm: '',
+                rArm: ''
+            }
+        ],
+        'style 2': [
+            {
+                id: 'hoodie',
+                name: 'Comfy Hoodie',
+                body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z" stroke-width="1"/>',
+                lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165" stroke-width="1"/>',
+                rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165" stroke-width="1"/>'
+            },
+            {
+                id: 'vneck',
+                name: 'V-Neck',
+                body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z" stroke-width="1"/>',
+                lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160" stroke-width="1"/>',
+                rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150" stroke-width="1"/>'
+            }
+        ]
+    };
+
+    const clothesColors = hairColors; // Reuse hair colors for consistency
+
     // DOM Elements
     const gridContainer = document.querySelector('.grid');
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -231,6 +271,38 @@ document.addEventListener('DOMContentLoaded', () => {
             smileContainer.innerHTML = smileOptions[state.smile].svg;
         }
 
+        // 6. Clothes
+        const bodyClothes = document.getElementById('clothes-body-container');
+        const lArmClothes = document.getElementById('clothes-l-arm-container');
+        const rArmClothes = document.getElementById('clothes-r-arm-container');
+
+        if (bodyClothes && lArmClothes && rArmClothes) {
+            bodyClothes.innerHTML = '';
+            lArmClothes.innerHTML = '';
+            rArmClothes.innerHTML = '';
+
+            if (state.clothes !== 'none') {
+                let selectedClothes = null;
+                Object.values(clothesOptions).forEach(styleList => {
+                    const found = styleList.find(c => c.id === state.clothes);
+                    if (found) selectedClothes = found;
+                });
+
+                if (selectedClothes) {
+                    bodyClothes.innerHTML = selectedClothes.body;
+                    lArmClothes.innerHTML = selectedClothes.lArm;
+                    rArmClothes.innerHTML = selectedClothes.rArm;
+
+                    [bodyClothes, lArmClothes, rArmClothes].forEach(container => {
+                        container.querySelectorAll('path').forEach(path => {
+                            path.style.fill = state.clothesColor;
+                            path.style.stroke = '#334155';
+                        });
+                    });
+                }
+            }
+        }
+
         // Trigger character bounce feedback animation on user interaction
         if (!isLoad) {
             characterWrapper.classList.remove('bounce-animation');
@@ -273,6 +345,83 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridContainer.appendChild(item);
             });
         } 
+        else if (tabName === 'style 1' || tabName === 'style 2') {
+            clothesOptions[tabName].forEach(option => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                if (state.clothes === option.id) item.classList.add('active');
+
+                const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svgPreview.setAttribute('viewBox', '20 70 160 160');
+                svgPreview.setAttribute('width', '100%');
+                svgPreview.setAttribute('height', '100%');
+
+                // Show a mini body preview with the clothes on it
+                svgPreview.innerHTML = `
+                    <g transform="translate(0, -50)">
+                        <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                        <path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                        <path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                        ${option.body}
+                        ${option.lArm}
+                        ${option.rArm}
+                    </g>
+                `;
+
+                // Apply color to the paths within the clothes SVG snippet
+                const clothesPaths = svgPreview.querySelectorAll('path:not([fill="#f1f5f9"])');
+                clothesPaths.forEach(path => {
+                    path.style.fill = state.clothesColor;
+                    path.style.stroke = '#334155';
+                });
+
+                item.appendChild(svgPreview);
+
+                const label = document.createElement('span');
+                label.className = 'preview-label';
+                label.style.position = 'absolute';
+                label.style.bottom = '4px';
+                label.style.fontSize = '10px';
+                label.style.fontWeight = 'bold';
+                label.style.color = '#475569';
+                label.textContent = option.name;
+                item.appendChild(label);
+
+                item.addEventListener('click', () => {
+                    if (state.clothes !== option.id) {
+                        state.clothes = option.id;
+                        renderCharacter();
+                        saveHistory();
+                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+                gridContainer.appendChild(item);
+            });
+        }
+        else if (tabName === 'color details') {
+            clothesColors.forEach(color => {
+                const item = document.createElement('div');
+                item.className = 'grid-item color-swatch-item';
+                if (state.clothesColor === color.value) item.classList.add('active');
+
+                const circle = document.createElement('div');
+                circle.className = 'color-circle';
+                circle.style.backgroundColor = color.value;
+                item.appendChild(circle);
+
+                item.addEventListener('click', () => {
+                    if (state.clothesColor !== color.value) {
+                        state.clothesColor = color.value;
+                        renderCharacter();
+                        saveHistory();
+                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+                gridContainer.appendChild(item);
+            });
+        }
         else if (tabName === 'body type') {
             bodyTypes.forEach(type => {
                 const item = document.createElement('div');
