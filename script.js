@@ -144,32 +144,52 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 id: 'tshirt',
                 name: 'Basic Tee',
-                body: '<path d="M 70 140 Q 100 130 130 140 L 130 180 Q 100 190 70 180 Z" stroke-width="1"/>',
-                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165" stroke-width="1"/>',
-                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165" stroke-width="1"/>'
+                body: '<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>',
+                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
+                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
             },
             {
                 id: 'tanktop',
                 name: 'Tank Top',
-                body: '<path d="M 80 140 Q 100 135 120 140 L 120 190 Q 100 200 80 190 Z" stroke-width="1"/>',
+                body: '<path d="M 80 140 Q 100 135 120 140 L 120 195 Q 100 205 80 195 Z"/><path d="M 80 140 Q 100 150 120 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.2" data-decorative="true"/>',
                 lArm: '',
                 rArm: ''
+            },
+            {
+                id: 'pacifica',
+                name: 'Bula Shirt',
+                body: `<path d="M 68 140 Q 100 125 132 140 L 132 195 Q 100 205 68 195 Z"/>
+                       <path d="M 68 140 L 85 155 L 100 145 L 115 155 L 132 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.4" data-decorative="true"/>
+                       <circle cx="85" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
+                       <circle cx="115" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
+                       <circle cx="100" cy="185" r="3" fill="white" opacity="0.5" data-decorative="true"/>`,
+                lArm: '<path d="M 75 145 Q 50 150 45 165 Q 55 175 75 168"/>',
+                rArm: '<path d="M 125 145 Q 150 120 155 135 Q 145 145 125 152"/>'
             }
         ],
         'style 2': [
             {
                 id: 'hoodie',
                 name: 'Comfy Hoodie',
-                body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z" stroke-width="1"/>',
-                lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165" stroke-width="1"/>',
-                rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165" stroke-width="1"/>'
+                body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z"/><path d="M 85 140 Q 100 155 115 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.3" data-decorative="true"/><path d="M 80 185 L 120 185 L 115 200 L 85 200 Z" fill="none" stroke="#334155" stroke-width="1" opacity="0.2" data-decorative="true"/>',
+                lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
+                rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
             },
             {
                 id: 'vneck',
                 name: 'V-Neck',
-                body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z" stroke-width="1"/>',
-                lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160" stroke-width="1"/>',
-                rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150" stroke-width="1"/>'
+                body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 100 155 L 100 185" fill="none" stroke="#334155" stroke-width="1" opacity="0.1" data-decorative="true"/>',
+                lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160"/>',
+                rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150"/>'
+            },
+            {
+                id: 'maori',
+                name: 'Koru Tee',
+                body: `<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/>
+                       <path d="M 100 165 Q 110 165 110 175 Q 110 185 100 185 Q 90 185 90 175 Q 90 170 95 170" fill="none" stroke="white" stroke-width="2" opacity="0.4" data-decorative="true"/>
+                       <path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>`,
+                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
+                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
             }
         ]
     };
@@ -294,9 +314,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     rArmClothes.innerHTML = selectedClothes.rArm;
 
                     [bodyClothes, lArmClothes, rArmClothes].forEach(container => {
-                        container.querySelectorAll('path').forEach(path => {
-                            path.style.fill = state.clothesColor;
-                            path.style.stroke = '#334155';
+                        container.querySelectorAll('path, circle').forEach(el => {
+                            if (el.getAttribute('data-decorative') !== 'true') {
+                                el.style.fill = state.clothesColor;
+                                el.style.stroke = '#334155';
+                            }
                         });
                     });
                 }
@@ -356,23 +378,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 svgPreview.setAttribute('width', '100%');
                 svgPreview.setAttribute('height', '100%');
 
-                // Show a mini body preview with the clothes on it
+                // Show a mini body preview with the clothes on it (arms hidden in preview as requested)
                 svgPreview.innerHTML = `
                     <g transform="translate(0, -50)">
                         <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
-                        <path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
-                        <path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
                         ${option.body}
-                        ${option.lArm}
-                        ${option.rArm}
                     </g>
                 `;
 
-                // Apply color to the paths within the clothes SVG snippet
-                const clothesPaths = svgPreview.querySelectorAll('path:not([fill="#f1f5f9"])');
-                clothesPaths.forEach(path => {
-                    path.style.fill = state.clothesColor;
-                    path.style.stroke = '#334155';
+                // Apply color to the elements within the clothes SVG snippet
+                const clothesElements = svgPreview.querySelectorAll('path:not([fill="#f1f5f9"]), circle');
+                clothesElements.forEach(el => {
+                    if (el.getAttribute('data-decorative') !== 'true') {
+                        el.style.fill = state.clothesColor;
+                        el.style.stroke = '#334155';
+                    }
                 });
 
                 item.appendChild(svgPreview);
