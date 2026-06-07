@@ -194,7 +194,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
-    const clothesColors = hairColors; // Reuse hair colors for consistency
+    const clothesColors = [
+        { name: 'Sleek Grey', value: '#94a3b8' },
+        { name: 'Dark Slate', value: '#1e293b' },
+        { name: 'Navy Blue', value: '#1e3a8a' },
+        { name: 'Forest Green', value: '#14532d' },
+        { name: 'Wine Red', value: '#7f1d1d' },
+        { name: 'Pastel Blonde', value: '#fef08a' },
+        { name: 'Ginger Auburn', value: '#d97706' },
+        { name: 'Soft Brown', value: '#854d0e' },
+        { name: 'Pastel Pink', value: '#f472b6' },
+        { name: 'Lavender Violet', value: '#c084fc' },
+        { name: 'Pastel Mint', value: '#a7f3d0' },
+        { name: 'Sky Blue', value: '#60a5fa' },
+        { name: 'Winter White', value: '#f8fafc' }
+    ];
 
     // DOM Elements
     const gridContainer = document.querySelector('.grid');
@@ -378,10 +392,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 svgPreview.setAttribute('width', '100%');
                 svgPreview.setAttribute('height', '100%');
 
-                // Show a mini body preview with the clothes on it (arms hidden in preview as requested)
+                // Show a mini body preview with the clothes (including sleeves but excluding skin)
                 svgPreview.innerHTML = `
                     <g transform="translate(0, -50)">
                         <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                        ${option.lArm}
+                        ${option.rArm}
                         ${option.body}
                     </g>
                 `;

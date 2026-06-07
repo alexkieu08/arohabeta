@@ -294,12 +294,16 @@ body {
 /* Bottom Controls */
 .bottom-btn {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     background: transparent;
     border: none;
     cursor: pointer;
     opacity: 0.7;
     transition: opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 
 .bottom-btn:hover {
@@ -312,4 +316,12 @@ body {
 
 .redo-btn {
     right: 20px;
+}
+
+.btn-label {
+    color: #b08b5e;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: lowercase;
+    margin-top: -5px;
 }
