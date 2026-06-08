@@ -215,6 +215,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
+    const finishBtn = document.querySelector('.finish-btn');
+    const editBackBtn = document.querySelector('#edit-back-btn');
+    const customizerScreen = document.getElementById('customizer-screen');
+    const homeScreen = document.getElementById('home-screen');
+    const homeNameDisplay = document.getElementById('home-name-display');
+    const homeCharacterDisplay = document.querySelector('.home-character-display');
     
     // Sidebar Button Selection
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
@@ -731,6 +737,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Initial run to size the placeholder correctly
         resizeInput();
+    }
+
+    // Screen Transition Logic
+    if (finishBtn) {
+        finishBtn.addEventListener('click', () => {
+            customizerScreen.style.display = 'none';
+            homeScreen.style.display = 'flex';
+
+            // Update name display
+            homeNameDisplay.textContent = state.name || 'Buddy';
+
+            // Clone character to home screen
+            homeCharacterDisplay.innerHTML = '';
+            const characterClone = characterWrapper.cloneNode(true);
+            homeCharacterDisplay.appendChild(characterClone);
+        });
+    }
+
+    if (editBackBtn) {
+        editBackBtn.addEventListener('click', () => {
+            homeScreen.style.display = 'none';
+            customizerScreen.style.display = 'flex';
+        });
     }
 
     // Save initial state into history

@@ -325,3 +325,124 @@ body {
     text-transform: lowercase;
     margin-top: -5px;
 }
+
+/* Finish Button */
+.finish-btn {
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.finish-btn:hover {
+    background-color: #2b6cb0;
+    transform: translateY(-2px);
+}
+
+.finish-btn:active {
+    transform: translateY(0);
+}
+
+/* Home Screen Styles */
+.home-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.welcome-title {
+    color: #1765a3;
+    font-size: 32px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+#home-name-display {
+    color: #3182ce;
+    border-bottom: 3px solid #3182ce;
+}
+
+.home-layout {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    width: 100%;
+}
+
+.home-character-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ebf8ff;
+    border-radius: 20px;
+    padding: 40px;
+    min-height: 350px;
+}
+
+.home-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.home-status {
+    font-size: 20px;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.home-btn {
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-align: center;
+}
+
+.home-btn.primary {
+    background-color: #3182ce;
+    color: white;
+    box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3);
+}
+
+.home-btn.primary:hover {
+    background-color: #2b6cb0;
+    transform: scale(1.02);
+}
+
+.home-btn.secondary {
+    background-color: white;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.home-btn.secondary:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e1;
+}

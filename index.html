@@ -17,7 +17,7 @@
                 <div class="dot"></div>
             </div>
         </div>
-        <div class="main-content">
+        <div class="main-content" id="customizer-screen">
             <div class="left-panel">
                 <h1 class="main-title">Firstly, bring your study buddy to life! ✨</h1>
                 
@@ -126,6 +126,7 @@
                         <div class="grid-item"></div>
                         <div class="grid-item"></div>
                     </div>
+                    <button class="finish-btn">Finish ✨</button>
                 </div>
             </div>
             
@@ -143,6 +144,24 @@
                 </svg>
                 <span class="btn-label">redo</span>
             </button>
+        </div>
+
+        <div class="main-content" id="home-screen" style="display: none;">
+            <div class="home-container">
+                <h1 class="welcome-title">Welcome Home, <span id="home-name-display">Buddy</span>! 🏠</h1>
+                <div class="home-layout">
+                    <div class="home-character-display">
+                        <!-- Character will be cloned or re-rendered here -->
+                    </div>
+                    <div class="home-info">
+                        <p class="home-status">Your study buddy is ready to go!</p>
+                        <div class="home-actions">
+                            <button class="home-btn primary">Start Studying 📚</button>
+                            <button class="home-btn secondary" id="edit-back-btn">Back to Edit ✏️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
