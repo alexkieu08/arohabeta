@@ -221,42 +221,72 @@ document.addEventListener('DOMContentLoaded', () => {
     const homeScreen = document.getElementById('home-screen');
     const homeNameDisplay = document.getElementById('home-name-display');
     const homeCharacterDisplay = document.querySelector('.home-character-display');
+    const nextBtn = document.querySelector('.next-step');
+    const prevBtn = document.querySelector('.prev-step');
+
+    // Sequential Customization Steps
+    const customizationSteps = [
+        { category: 'btn-body', tab: 'Body Type' },
+        { category: 'btn-body', tab: 'Skin Color' },
+        { category: 'btn-body', tab: 'Hair' },
+        { category: 'btn-body', tab: 'Hair Color' },
+        { category: 'btn-body', tab: 'Face Shape' },
+        { category: 'btn-body', tab: 'Eyes' },
+        { category: 'btn-clothes', tab: 'Style 1' },
+        { category: 'btn-clothes', tab: 'Style 2' },
+        { category: 'btn-clothes', tab: 'Color Details' }
+    ];
+    let currentStepIndex = 0;
     
     // Sidebar Button Selection
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     sidebarBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            sidebarBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Switch tabs depending on category selected
-            if (btn.id === 'btn-body') {
-                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes']);
-            } else {
-                // Return placeholder tabs for other sections
-                updateTabs(['Style 1', 'Style 2', 'Color Details']);
-            }
+            selectCategory(btn.id);
         });
     });
 
+    function selectCategory(categoryId, activeTab) {
+        sidebarBtns.forEach(b => b.classList.remove('active'));
+        const activeSidebarBtn = document.getElementById(categoryId);
+        if (activeSidebarBtn) activeSidebarBtn.classList.add('active');
+
+        if (categoryId === 'btn-body') {
+            updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes'], activeTab);
+        } else if (categoryId === 'btn-clothes') {
+            updateTabs(['Style 1', 'Style 2', 'Color Details'], activeTab);
+        } else {
+            // Placeholder for other categories
+            updateTabs(['Soon ✨'], 'Soon ✨');
+        }
+    }
+
     // Function to dynamically rewrite tabs when switching categories
-    function updateTabs(tabNames) {
+    function updateTabs(tabNames, activeTabName) {
         const tabsContainer = document.querySelector('.tabs');
         tabsContainer.innerHTML = '';
         tabNames.forEach((name, index) => {
             const button = document.createElement('button');
-            button.className = `tab-btn${index === 1 ? ' active' : ''}`; // Default to Skin Color (second tab)
+            const isActive = activeTabName ? (name.toLowerCase() === activeTabName.toLowerCase()) : (index === 0);
+            button.className = `tab-btn${isActive ? ' active' : ''}`;
             button.textContent = name;
             button.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
                 renderGrid(name.toLowerCase());
+
+                // Update currentStepIndex if user manually clicks a tab
+                const newStepIndex = customizationSteps.findIndex(s => s.tab.toLowerCase() === name.toLowerCase());
+                if (newStepIndex !== -1) {
+                    currentStepIndex = newStepIndex;
+                    updateNavButtons();
+                }
             });
             tabsContainer.appendChild(button);
         });
-        // Render Skin Color by default if it is available, otherwise the first tab
-        const defaultTab = tabNames.includes('Skin Color') ? 'skin color' : tabNames[0].toLowerCase();
-        renderGrid(defaultTab);
+
+        const targetTab = activeTabName || tabNames[0];
+        renderGrid(targetTab.toLowerCase());
     }
 
     // Save state to Undo/Redo history
@@ -739,6 +769,42 @@ document.addEventListener('DOMContentLoaded', () => {
         resizeInput();
     }
 
+    function updateNavButtons() {
+        // Visibility of Back button
+        prevBtn.style.visibility = currentStepIndex === 0 ? 'hidden' : 'visible';
+
+        // Next vs Finish button
+        if (currentStepIndex === customizationSteps.length - 1) {
+            nextBtn.style.display = 'none';
+            finishBtn.style.display = 'block';
+        } else {
+            nextBtn.style.display = 'block';
+            finishBtn.style.display = 'none';
+        }
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentStepIndex < customizationSteps.length - 1) {
+                currentStepIndex++;
+                const step = customizationSteps[currentStepIndex];
+                selectCategory(step.category, step.tab);
+                updateNavButtons();
+            }
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                const step = customizationSteps[currentStepIndex];
+                selectCategory(step.category, step.tab);
+                updateNavButtons();
+            }
+        });
+    }
+
     // Screen Transition Logic
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
@@ -767,5 +833,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render the initial skin color, tabs, and grid layout on page load
     renderCharacter(true);
-    renderGrid('skin color');
+    // Initialize to first step
+    const initialStep = customizationSteps[0];
+    currentStepIndex = 0;
+    selectCategory(initialStep.category, initialStep.tab);
+    updateNavButtons();
 });

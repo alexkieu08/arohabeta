@@ -326,10 +326,16 @@ body {
     margin-top: -5px;
 }
 
-/* Finish Button */
-.finish-btn {
-    width: 100%;
+/* Navigation Controls */
+.nav-controls {
+    display: flex;
+    gap: 15px;
     margin-top: 30px;
+    width: 100%;
+}
+
+.nav-btn, .finish-btn {
+    flex: 1;
     padding: 15px;
     background-color: #3182ce;
     color: white;
@@ -338,17 +344,36 @@ body {
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+    transition: all 0.2s;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.finish-btn:hover {
+.nav-btn:hover, .finish-btn:hover {
     background-color: #2b6cb0;
     transform: translateY(-2px);
 }
 
-.finish-btn:active {
+.nav-btn:active, .finish-btn:active {
     transform: translateY(0);
+}
+
+.prev-step {
+    background-color: white;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.prev-step:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e1;
+}
+
+.finish-btn {
+    background-color: #48bb78; /* Green for completion */
+}
+
+.finish-btn:hover {
+    background-color: #38a169;
 }
 
 /* Home Screen Styles */
