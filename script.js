@@ -29,10 +29,58 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const bodyTypes = [
-        { id: 'standard', name: 'Standard', transform: 'scale(1)', svg: '<ellipse cx="30" cy="30" rx="20" ry="18" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'chubby', name: 'Chubby', transform: 'scale(1.15, 0.9)', svg: '<ellipse cx="30" cy="30" rx="24" ry="14" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'tall', name: 'Tall', transform: 'scale(0.88, 1.15)', svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'tiny', name: 'Tiny', transform: 'scale(0.8)', svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' }
+        {
+            id: 'standard',
+            name: 'Standard',
+            paths: {
+                body: 'M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z',
+                lArm: 'M 75 145 Q 40 155 25 175 Q 40 190 75 165',
+                rArm: 'M 125 145 Q 160 115 175 125 Q 160 155 125 165',
+                lLeg: 'M 70 200 L 60 240 Q 70 250 80 240 L 90 200',
+                rLeg: 'M 130 200 L 140 240 Q 130 250 120 240 L 110 200'
+            },
+            headTranslate: 'translate(0, 0)',
+            svg: '<ellipse cx="30" cy="30" rx="20" ry="18" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
+        },
+        {
+            id: 'chubby',
+            name: 'Chubby',
+            paths: {
+                body: 'M 60 150 Q 100 140 140 150 L 140 200 Q 100 215 60 200 Z',
+                lArm: 'M 65 155 Q 30 165 15 185 Q 30 200 65 175',
+                rArm: 'M 135 155 Q 170 125 185 135 Q 170 165 135 175',
+                lLeg: 'M 70 200 L 60 240 Q 70 250 80 240 L 90 200',
+                rLeg: 'M 130 200 L 140 240 Q 130 250 120 240 L 110 200'
+            },
+            headTranslate: 'translate(0, 10)',
+            svg: '<ellipse cx="30" cy="30" rx="24" ry="14" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
+        },
+        {
+            id: 'tall',
+            name: 'Tall',
+            paths: {
+                body: 'M 75 120 Q 100 110 125 120 L 125 200 Q 100 210 75 200 Z',
+                lArm: 'M 80 125 Q 45 135 30 155 Q 45 170 80 145',
+                rArm: 'M 120 125 Q 155 95 170 105 Q 155 135 120 145',
+                lLeg: 'M 75 200 L 65 240 Q 75 250 85 240 L 95 200',
+                rLeg: 'M 125 200 L 135 240 Q 125 250 115 240 L 105 200'
+            },
+            headTranslate: 'translate(0, -20)',
+            svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
+        },
+        {
+            id: 'tiny',
+            name: 'Tiny',
+            paths: {
+                body: 'M 80 160 Q 100 155 120 160 L 120 200 Q 100 205 80 200 Z',
+                lArm: 'M 85 165 Q 60 170 50 185 Q 60 195 85 180',
+                rArm: 'M 115 165 Q 140 145 150 155 Q 140 175 115 170',
+                lLeg: 'M 80 200 L 75 230 Q 80 240 85 230 L 90 200',
+                rLeg: 'M 120 200 L 125 230 Q 120 240 115 230 L 110 200'
+            },
+            headTranslate: 'translate(0, 20)',
+            svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
+        }
     ];
 
     const hairOptions = {
@@ -140,57 +188,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clothesOptions = {
         'style 1': [
-            { id: 'none', name: 'None', body: '', lArm: '', rArm: '' },
-            {
-                id: 'tshirt',
-                name: 'Basic Tee',
-                body: '<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>',
-                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
-                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
-            },
-            {
-                id: 'tanktop',
-                name: 'Tank Top',
-                body: '<path d="M 80 140 Q 100 135 120 140 L 120 195 Q 100 205 80 195 Z"/><path d="M 80 140 Q 100 150 120 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.2" data-decorative="true"/>',
-                lArm: '',
-                rArm: ''
-            },
-            {
-                id: 'pacifica',
-                name: 'Bula Shirt',
-                body: `<path d="M 68 140 Q 100 125 132 140 L 132 195 Q 100 205 68 195 Z"/>
-                       <path d="M 68 140 L 85 155 L 100 145 L 115 155 L 132 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.4" data-decorative="true"/>
-                       <circle cx="85" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
-                       <circle cx="115" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
-                       <circle cx="100" cy="185" r="3" fill="white" opacity="0.5" data-decorative="true"/>`,
-                lArm: '<path d="M 75 145 Q 50 150 45 165 Q 55 175 75 168"/>',
-                rArm: '<path d="M 125 145 Q 150 120 155 135 Q 145 145 125 152"/>'
-            }
+            { category: 'Basics', options: [
+                { id: 'none', name: 'None', body: '', lArm: '', rArm: '' },
+                {
+                    id: 'tshirt',
+                    name: 'Basic Tee',
+                    body: '<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>',
+                    lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
+                    rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
+                },
+                {
+                    id: 'tanktop',
+                    name: 'Tank Top',
+                    body: '<path d="M 80 140 Q 100 135 120 140 L 120 195 Q 100 205 80 195 Z"/><path d="M 80 140 Q 100 150 120 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.2" data-decorative="true"/>',
+                    lArm: '',
+                    rArm: ''
+                },
+                {
+                    id: 'croptop',
+                    name: 'Crop Top',
+                    body: '<path d="M 70 140 Q 100 130 130 140 L 130 170 Q 100 175 70 170 Z"/>',
+                    lArm: '<path d="M 75 145 Q 60 150 55 155 Q 60 165 75 160"/>',
+                    rArm: '<path d="M 125 145 Q 140 130 145 135 Q 140 145 125 150"/>'
+                }
+            ]},
+            { category: 'Cultural', options: [
+                {
+                    id: 'pacifica',
+                    name: 'Bula Shirt',
+                    body: `<path d="M 68 140 Q 100 125 132 140 L 132 195 Q 100 205 68 195 Z"/>
+                           <path d="M 68 140 L 85 155 L 100 145 L 115 155 L 132 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.4" data-decorative="true"/>
+                           <circle cx="85" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
+                           <circle cx="115" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
+                           <circle cx="100" cy="185" r="3" fill="white" opacity="0.5" data-decorative="true"/>`,
+                    lArm: '<path d="M 75 145 Q 50 150 45 165 Q 55 175 75 168"/>',
+                    rArm: '<path d="M 125 145 Q 150 120 155 135 Q 145 145 125 152"/>'
+                }
+            ]}
         ],
         'style 2': [
-            {
-                id: 'hoodie',
-                name: 'Comfy Hoodie',
-                body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z"/><path d="M 85 140 Q 100 155 115 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.3" data-decorative="true"/><path d="M 80 185 L 120 185 L 115 200 L 85 200 Z" fill="none" stroke="#334155" stroke-width="1" opacity="0.2" data-decorative="true"/>',
-                lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
-                rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
-            },
-            {
-                id: 'vneck',
-                name: 'V-Neck',
-                body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 100 155 L 100 185" fill="none" stroke="#334155" stroke-width="1" opacity="0.1" data-decorative="true"/>',
-                lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160"/>',
-                rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150"/>'
-            },
-            {
-                id: 'maori',
-                name: 'Koru Tee',
-                body: `<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/>
-                       <path d="M 100 165 Q 110 165 110 175 Q 110 185 100 185 Q 90 185 90 175 Q 90 170 95 170" fill="none" stroke="white" stroke-width="2" opacity="0.4" data-decorative="true"/>
-                       <path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>`,
-                lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
-                rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
-            }
+            { category: 'Outdoor', options: [
+                {
+                    id: 'hoodie',
+                    name: 'Comfy Hoodie',
+                    body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z"/><path d="M 85 140 Q 100 155 115 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.3" data-decorative="true"/><path d="M 80 185 L 120 185 L 115 200 L 85 200 Z" fill="none" stroke="#334155" stroke-width="1" opacity="0.2" data-decorative="true"/>',
+                    lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
+                    rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
+                }
+            ]},
+            { category: 'Modern', options: [
+                {
+                    id: 'vneck',
+                    name: 'V-Neck',
+                    body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 100 155 L 100 185" fill="none" stroke="#334155" stroke-width="1" opacity="0.1" data-decorative="true"/>',
+                    lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160"/>',
+                    rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150"/>'
+                },
+                {
+                    id: 'maori',
+                    name: 'Koru Tee',
+                    body: `<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/>
+                           <path d="M 100 165 Q 110 165 110 175 Q 110 185 100 185 Q 90 185 90 175 Q 90 170 95 170" fill="none" stroke="white" stroke-width="2" opacity="0.4" data-decorative="true"/>
+                           <path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>`,
+                    lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
+                    rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
+                },
+                {
+                    id: 'turtleneck',
+                    name: 'Turtleneck',
+                    body: '<path d="M 70 140 L 130 140 L 130 200 Q 100 210 70 200 Z"/><path d="M 85 125 L 115 125 L 115 140 L 85 140 Z" data-decorative="true"/>',
+                    lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
+                    rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
+                }
+            ]}
         ]
     };
 
@@ -311,8 +381,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Body Type
         const bodyTypeConfig = bodyTypes.find(t => t.id === state.bodyType);
         if (bodyTypeConfig) {
-            characterWrapper.style.transform = bodyTypeConfig.transform;
-            characterWrapper.style.transformOrigin = 'bottom center';
+            // Update paths instead of stretching with transform
+            const bodyPath = document.getElementById('body-path');
+            const lArmPath = document.getElementById('l-arm-path');
+            const rArmPath = document.getElementById('r-arm-path');
+            const lLegPath = document.getElementById('l-leg-path');
+            const rLegPath = document.getElementById('r-leg-path');
+            const headFaceGroup = document.getElementById('head-face-group');
+            const rArmGroup = document.getElementById('r-arm-group');
+
+            if (bodyPath) bodyPath.setAttribute('d', bodyTypeConfig.paths.body);
+            if (lArmPath) lArmPath.setAttribute('d', bodyTypeConfig.paths.lArm);
+            if (rArmPath) rArmPath.setAttribute('d', bodyTypeConfig.paths.rArm);
+            if (lLegPath) lLegPath.setAttribute('d', bodyTypeConfig.paths.lLeg);
+            if (rLegPath) rLegPath.setAttribute('d', bodyTypeConfig.paths.rLeg);
+
+            // Adjust head and face position
+            if (headFaceGroup) headFaceGroup.setAttribute('transform', bodyTypeConfig.headTranslate);
+
+            // Adjust right arm group origin for animation
+            if (rArmGroup && bodyTypeConfig.id === 'standard') rArmGroup.setAttribute('transform-origin', '125 155');
+            if (rArmGroup && bodyTypeConfig.id === 'chubby') rArmGroup.setAttribute('transform-origin', '135 155');
+            if (rArmGroup && bodyTypeConfig.id === 'tall') rArmGroup.setAttribute('transform-origin', '120 125');
+            if (rArmGroup && bodyTypeConfig.id === 'tiny') rArmGroup.setAttribute('transform-origin', '115 165');
         }
 
         // 3. Hair (with dynamic hair coloring support)
@@ -345,25 +436,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const bodyClothes = document.getElementById('clothes-body-container');
         const lArmClothes = document.getElementById('clothes-l-arm-container');
         const rArmClothes = document.getElementById('clothes-r-arm-container');
+        const lLegClothes = document.getElementById('clothes-l-leg-container');
+        const rLegClothes = document.getElementById('clothes-r-leg-container');
 
-        if (bodyClothes && lArmClothes && rArmClothes) {
+        if (bodyClothes && lArmClothes && rArmClothes && lLegClothes && rLegClothes) {
             bodyClothes.innerHTML = '';
             lArmClothes.innerHTML = '';
             rArmClothes.innerHTML = '';
+            lLegClothes.innerHTML = '';
+            rLegClothes.innerHTML = '';
 
             if (state.clothes !== 'none') {
                 let selectedClothes = null;
                 Object.values(clothesOptions).forEach(styleList => {
-                    const found = styleList.find(c => c.id === state.clothes);
-                    if (found) selectedClothes = found;
+                    const found = styleList.find(group => group.options.some(c => c.id === state.clothes));
+                    if (found) {
+                        selectedClothes = found.options.find(c => c.id === state.clothes);
+                    }
                 });
 
                 if (selectedClothes) {
                     bodyClothes.innerHTML = selectedClothes.body;
                     lArmClothes.innerHTML = selectedClothes.lArm;
                     rArmClothes.innerHTML = selectedClothes.rArm;
+                    // Legs could be added here if options existed
 
-                    [bodyClothes, lArmClothes, rArmClothes].forEach(container => {
+                    [bodyClothes, lArmClothes, rArmClothes, lLegClothes, rLegClothes].forEach(container => {
                         container.querySelectorAll('path, circle').forEach(el => {
                             if (el.getAttribute('data-decorative') !== 'true') {
                                 el.style.fill = state.clothesColor;
@@ -393,6 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to render the Grid based on active tab
     function renderGrid(tabName) {
         gridContainer.innerHTML = ''; // Clear current grid
+        gridContainer.style.display = 'grid'; // Reset to grid default
 
         if (tabName === 'skin color') {
             skinColors.forEach(color => {
@@ -418,57 +517,71 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } 
         else if (tabName === 'style 1' || tabName === 'style 2') {
-            clothesOptions[tabName].forEach(option => {
-                const item = document.createElement('div');
-                item.className = 'grid-item';
-                if (state.clothes === option.id) item.classList.add('active');
+            // Apply category headings and grid structure
+            gridContainer.style.display = 'block'; // Change from grid to block for sections
 
-                const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svgPreview.setAttribute('viewBox', '20 70 160 160');
-                svgPreview.setAttribute('width', '100%');
-                svgPreview.setAttribute('height', '100%');
+            clothesOptions[tabName].forEach(group => {
+                const section = document.createElement('div');
+                section.className = 'grid-section';
 
-                // Show a mini body preview with the clothes (including sleeves but excluding skin)
-                svgPreview.innerHTML = `
-                    <g transform="translate(0, -50)">
-                        <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
-                        ${option.lArm}
-                        ${option.rArm}
-                        ${option.body}
-                    </g>
-                `;
+                const heading = document.createElement('h3');
+                heading.className = 'grid-heading';
+                heading.textContent = group.category;
+                section.appendChild(heading);
 
-                // Apply color to the elements within the clothes SVG snippet
-                const clothesElements = svgPreview.querySelectorAll('path:not([fill="#f1f5f9"]), circle');
-                clothesElements.forEach(el => {
-                    if (el.getAttribute('data-decorative') !== 'true') {
-                        el.style.fill = state.clothesColor;
-                        el.style.stroke = '#334155';
-                    }
+                const sectionGrid = document.createElement('div');
+                sectionGrid.className = 'grid'; // Nested grid
+                sectionGrid.style.marginTop = '10px';
+                sectionGrid.style.marginBottom = '20px';
+
+                group.options.forEach(option => {
+                    const item = document.createElement('div');
+                    item.className = 'grid-item';
+                    if (state.clothes === option.id) item.classList.add('active');
+
+                    const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svgPreview.setAttribute('viewBox', '20 70 160 160');
+                    svgPreview.setAttribute('width', '100%');
+                    svgPreview.setAttribute('height', '100%');
+
+                    svgPreview.innerHTML = `
+                        <g transform="translate(0, -50)">
+                            <path d="M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+                            ${option.lArm}
+                            ${option.rArm}
+                            ${option.body}
+                        </g>
+                    `;
+
+                    const clothesElements = svgPreview.querySelectorAll('path:not([fill="#f1f5f9"]), circle');
+                    clothesElements.forEach(el => {
+                        if (el.getAttribute('data-decorative') !== 'true') {
+                            el.style.fill = state.clothesColor;
+                            el.style.stroke = '#334155';
+                        }
+                    });
+
+                    item.appendChild(svgPreview);
+
+                    const label = document.createElement('span');
+                    label.className = 'preview-label';
+                    label.textContent = option.name;
+                    item.appendChild(label);
+
+                    item.addEventListener('click', () => {
+                        if (state.clothes !== option.id) {
+                            state.clothes = option.id;
+                            renderCharacter();
+                            saveHistory();
+                            document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+                            item.classList.add('active');
+                        }
+                    });
+                    sectionGrid.appendChild(item);
                 });
 
-                item.appendChild(svgPreview);
-
-                const label = document.createElement('span');
-                label.className = 'preview-label';
-                label.style.position = 'absolute';
-                label.style.bottom = '4px';
-                label.style.fontSize = '10px';
-                label.style.fontWeight = 'bold';
-                label.style.color = '#475569';
-                label.textContent = option.name;
-                item.appendChild(label);
-
-                item.addEventListener('click', () => {
-                    if (state.clothes !== option.id) {
-                        state.clothes = option.id;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                section.appendChild(sectionGrid);
+                gridContainer.appendChild(section);
             });
         }
         else if (tabName === 'color details') {
@@ -511,11 +624,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Label below shape
                 const label = document.createElement('span');
                 label.className = 'preview-label';
-                label.style.position = 'absolute';
-                label.style.bottom = '4px';
-                label.style.fontSize = '10px';
-                label.style.fontWeight = 'bold';
-                label.style.color = '#475569';
                 label.textContent = type.name;
                 item.appendChild(label);
 
@@ -559,11 +667,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const label = document.createElement('span');
                 label.className = 'preview-label';
-                label.style.position = 'absolute';
-                label.style.bottom = '4px';
-                label.style.fontSize = '10px';
-                label.style.fontWeight = 'bold';
-                label.style.color = '#475569';
                 label.textContent = hairOptions[key].name;
                 item.appendChild(label);
 
@@ -619,11 +722,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const label = document.createElement('span');
                 label.className = 'preview-label';
-                label.style.position = 'absolute';
-                label.style.bottom = '4px';
-                label.style.fontSize = '10px';
-                label.style.fontWeight = 'bold';
-                label.style.color = '#475569';
                 label.textContent = eyesOptions[key].name;
                 item.appendChild(label);
 
@@ -655,11 +753,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const label = document.createElement('span');
                 label.className = 'preview-label';
-                label.style.position = 'absolute';
-                label.style.bottom = '4px';
-                label.style.fontSize = '10px';
-                label.style.fontWeight = 'bold';
-                label.style.color = '#475569';
                 label.textContent = smileOptions[key].name;
                 item.appendChild(label);
 
