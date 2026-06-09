@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Sky Blue', value: '#e0f2fe' }
     ];
 
-    const bodyTypes = [
-        { id: 'standard', name: 'Standard', transform: 'scale(1)', svg: '<ellipse cx="30" cy="30" rx="20" ry="18" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'chubby', name: 'Chubby', transform: 'scale(1.15, 0.9)', svg: '<ellipse cx="30" cy="30" rx="24" ry="14" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'tall', name: 'Tall', transform: 'scale(0.88, 1.15)', svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
-        { id: 'tiny', name: 'Tiny', transform: 'scale(0.8)', svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' }
-    ];
+    const bodyTypes = {
+        standard: { name: 'Standard', transform: 'scale(1)', svg: '<ellipse cx="30" cy="30" rx="20" ry="18" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
+        chubby: { name: 'Chubby', transform: 'scale(1.15, 0.9)', svg: '<ellipse cx="30" cy="30" rx="24" ry="14" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
+        tall: { name: 'Tall', transform: 'scale(0.88, 1.15)', svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' },
+        tiny: { name: 'Tiny', transform: 'scale(0.8)', svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>' }
+    };
 
     const hairOptions = {
         bald: {
@@ -136,12 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // DOM Elements
+    // DOM Elements Cache
     const gridContainer = document.querySelector('.grid');
-    const tabBtns = document.querySelectorAll('.tab-btn');
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
-    
+    const skinPaths = document.querySelectorAll('.skin-path');
+    const hairContainer = document.getElementById('hair-container');
+    const eyesContainer = document.getElementById('eyes-container');
+    const smileContainer = document.getElementById('smile-container');
+    const tabsContainer = document.querySelector('.tabs');
+    const undoBtn = document.querySelector('.undo-btn');
+    const redoBtn = document.querySelector('.redo-btn');
+
+    // Grid cache to store rendered elements for each tab
+    const gridCache = new Map();
+
     // Sidebar Button Selection
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     sidebarBtns.forEach(btn => {
@@ -161,23 +170,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to dynamically rewrite tabs when switching categories
     function updateTabs(tabNames) {
-        const tabsContainer = document.querySelector('.tabs');
-        tabsContainer.innerHTML = '';
-        tabNames.forEach((name, index) => {
+        const fragment = document.createDocumentFragment();
+        // Determine which tab should be active by default
+        const defaultTabName = tabNames.includes('Skin Color') ? 'Skin Color' : tabNames[0];
+
+        tabNames.forEach((name) => {
             const button = document.createElement('button');
-            button.className = `tab-btn${index === 1 ? ' active' : ''}`; // Default to Skin Color (second tab)
+            button.className = `tab-btn${name === defaultTabName ? ' active' : ''}`;
             button.textContent = name;
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-                renderGrid(name.toLowerCase());
-            });
-            tabsContainer.appendChild(button);
+            fragment.appendChild(button);
         });
-        // Render Skin Color by default if it is available, otherwise the first tab
-        const defaultTab = tabNames.includes('Skin Color') ? 'skin color' : tabNames[0].toLowerCase();
-        renderGrid(defaultTab);
+        tabsContainer.innerHTML = '';
+        tabsContainer.appendChild(fragment);
+
+        renderGrid(defaultTabName.toLowerCase());
     }
+
+    // Event delegation for tabs
+    tabsContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('.tab-btn');
+        if (!button) return;
+
+        tabsContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+        renderGrid(button.textContent.trim().toLowerCase());
+    });
 
     // Save state to Undo/Redo history
     function saveHistory() {
@@ -185,7 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (historyIndex < historyStack.length - 1) {
             historyStack.splice(historyIndex + 1);
         }
-        historyStack.push(JSON.stringify(state));
+        // Use structuredClone if available for better performance than JSON.stringify
+        const snapshot = typeof structuredClone === 'function' ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+        historyStack.push(snapshot);
         historyIndex = historyStack.length - 1;
         updateUndoRedoButtons();
     }
@@ -193,20 +212,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render the character according to the state object
     function renderCharacter(isLoad = false) {
         // 1. Skin Color
-        const skinPaths = document.querySelectorAll('.skin-path');
         skinPaths.forEach(path => {
-            path.style.fill = state.skinColor;
+            if (path.style.fill !== state.skinColor) {
+                path.style.fill = state.skinColor;
+            }
         });
 
         // 2. Body Type
-        const bodyTypeConfig = bodyTypes.find(t => t.id === state.bodyType);
+        const bodyTypeConfig = bodyTypes[state.bodyType];
         if (bodyTypeConfig) {
-            characterWrapper.style.transform = bodyTypeConfig.transform;
-            characterWrapper.style.transformOrigin = 'bottom center';
+            const transform = bodyTypeConfig.transform;
+            if (characterWrapper.style.transform !== transform) {
+                characterWrapper.style.transform = transform;
+                characterWrapper.style.transformOrigin = 'bottom center';
+            }
         }
 
         // 3. Hair (with dynamic hair coloring support)
-        const hairContainer = document.getElementById('hair-container');
         if (hairContainer) {
             hairContainer.innerHTML = hairOptions[state.hair].svg;
             
@@ -220,13 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 4. Eyes
-        const eyesContainer = document.getElementById('eyes-container');
         if (eyesContainer && eyesOptions[state.eyes]) {
             eyesContainer.innerHTML = eyesOptions[state.eyes].svg;
         }
 
         // 5. Smile
-        const smileContainer = document.getElementById('smile-container');
         if (smileContainer && smileOptions[state.smile]) {
             smileContainer.innerHTML = smileOptions[state.smile].svg;
         }
@@ -240,44 +260,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateUndoRedoButtons() {
-        const undoBtn = document.querySelector('.undo-btn');
-        const redoBtn = document.querySelector('.redo-btn');
         if (undoBtn) undoBtn.style.opacity = historyIndex > 0 ? '1' : '0.3';
         if (redoBtn) redoBtn.style.opacity = historyIndex < historyStack.length - 1 ? '1' : '0.3';
     }
 
+    // Event delegation for grid items
+    gridContainer.addEventListener('click', (e) => {
+        const item = e.target.closest('.grid-item');
+        if (!item) return;
+
+        const tabName = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
+        const value = item.dataset.value;
+
+        let changed = false;
+        if (tabName === 'skin color') {
+            if (state.skinColor !== value) {
+                state.skinColor = value;
+                changed = true;
+            }
+        } else if (tabName === 'body type') {
+            if (state.bodyType !== value) {
+                state.bodyType = value;
+                changed = true;
+            }
+        } else if (tabName === 'hair') {
+            if (state.hair !== value) {
+                state.hair = value;
+                changed = true;
+            }
+        } else if (tabName === 'hair color') {
+            if (state.hairColor !== value) {
+                state.hairColor = value;
+                changed = true;
+            }
+        } else if (tabName === 'eyes') {
+            if (state.eyes !== value) {
+                state.eyes = value;
+                changed = true;
+            }
+        } else if (tabName === 'face shape') {
+            if (state.smile !== value) {
+                state.smile = value;
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            renderCharacter();
+            saveHistory();
+            gridContainer.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+            item.classList.add('active');
+        }
+    });
+
     // Function to render the Grid based on active tab
     function renderGrid(tabName) {
-        gridContainer.innerHTML = ''; // Clear current grid
+        if (gridCache.has(tabName)) {
+            gridContainer.innerHTML = '';
+            gridContainer.appendChild(gridCache.get(tabName).cloneNode(true));
+            updateGridActiveStates(tabName);
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
 
         if (tabName === 'skin color') {
             skinColors.forEach(color => {
                 const item = document.createElement('div');
                 item.className = 'grid-item color-swatch-item';
-                if (state.skinColor === color.value) item.classList.add('active');
+                item.dataset.value = color.value;
 
                 const circle = document.createElement('div');
                 circle.className = 'color-circle';
                 circle.style.backgroundColor = color.value;
                 item.appendChild(circle);
-
-                item.addEventListener('click', () => {
-                    if (state.skinColor !== color.value) {
-                        state.skinColor = color.value;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         } 
         else if (tabName === 'body type') {
-            bodyTypes.forEach(type => {
+            Object.keys(bodyTypes).forEach(id => {
+                const type = bodyTypes[id];
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.bodyType === type.id) item.classList.add('active');
+                item.dataset.value = id;
 
                 // Render small preview SVG of shape
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -297,24 +362,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#475569';
                 label.textContent = type.name;
                 item.appendChild(label);
-
-                item.addEventListener('click', () => {
-                    if (state.bodyType !== type.id) {
-                        state.bodyType = type.id;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         } 
         else if (tabName === 'hair') {
             Object.keys(hairOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.hair === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 // Render visual preview: dummy head + hair styled in current hair color
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -327,13 +382,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${hairOptions[key].svg}
                 `;
                 
-                // Colorize the preview hair paths to the currently active hair color
-                const previewHairPaths = svgPreview.querySelectorAll('path, circle, ellipse');
-                previewHairPaths.forEach(el => {
-                    if (el.getAttribute('data-accessory') !== 'true') {
-                        el.style.fill = state.hairColor;
-                    }
-                });
                 item.appendChild(svgPreview);
 
                 const label = document.createElement('span');
@@ -345,47 +393,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#475569';
                 label.textContent = hairOptions[key].name;
                 item.appendChild(label);
-
-                item.addEventListener('click', () => {
-                    if (state.hair !== key) {
-                        state.hair = key;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         }
         else if (tabName === 'hair color') {
             hairColors.forEach(color => {
                 const item = document.createElement('div');
                 item.className = 'grid-item color-swatch-item';
-                if (state.hairColor === color.value) item.classList.add('active');
+                item.dataset.value = color.value;
 
                 const circle = document.createElement('div');
                 circle.className = 'color-circle';
                 circle.style.backgroundColor = color.value;
                 item.appendChild(circle);
-
-                item.addEventListener('click', () => {
-                    if (state.hairColor !== color.value) {
-                        state.hairColor = color.value;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         }
         else if (tabName === 'eyes') {
             Object.keys(eyesOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.eyes === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 // Render eyes SVG snippet as preview
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -405,24 +433,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#475569';
                 label.textContent = eyesOptions[key].name;
                 item.appendChild(label);
-
-                item.addEventListener('click', () => {
-                    if (state.eyes !== key) {
-                        state.eyes = key;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         } 
         else if (tabName === 'face shape') { // maps to expressions/mouth
             Object.keys(smileOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.smile === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 // Render smile SVG snippet as preview
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -441,17 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#475569';
                 label.textContent = smileOptions[key].name;
                 item.appendChild(label);
-
-                item.addEventListener('click', () => {
-                    if (state.smile !== key) {
-                        state.smile = key;
-                        renderCharacter();
-                        saveHistory();
-                        document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
-                        item.classList.add('active');
-                    }
-                });
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             });
         } 
         else {
@@ -471,37 +479,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#94a3b8';
                 label.textContent = 'Soon';
                 item.appendChild(label);
-                
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             }
         }
+
+        gridCache.set(tabName, fragment);
+        gridContainer.innerHTML = '';
+        gridContainer.appendChild(gridCache.get(tabName).cloneNode(true));
+        updateGridActiveStates(tabName);
     }
 
-    // Handle Tab Buttons (Initial load tabs bindings)
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            const selectedTab = btn.textContent.trim().toLowerCase();
-            renderGrid(selectedTab);
+    function updateGridActiveStates(tabName) {
+        const items = gridContainer.querySelectorAll('.grid-item');
+        let currentValue;
+
+        if (tabName === 'skin color') currentValue = state.skinColor;
+        else if (tabName === 'body type') currentValue = state.bodyType;
+        else if (tabName === 'hair') currentValue = state.hair;
+        else if (tabName === 'hair color') currentValue = state.hairColor;
+        else if (tabName === 'eyes') currentValue = state.eyes;
+        else if (tabName === 'face shape') currentValue = state.smile;
+
+        items.forEach(item => {
+            if (item.dataset.value === currentValue) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+
+            // Update hair color in previews if on hair tab
+            if (tabName === 'hair') {
+                const previewHairPaths = item.querySelectorAll('svg path, svg circle, svg ellipse');
+                previewHairPaths.forEach(el => {
+                    if (el.getAttribute('data-accessory') !== 'true') {
+                        el.style.fill = state.hairColor;
+                    }
+                });
+            }
         });
-    });
+    }
 
     // Handle Undo/Redo Buttons
-    const undoBtn = document.querySelector('.undo-btn');
-    const redoBtn = document.querySelector('.redo-btn');
-
     if (undoBtn) {
         undoBtn.addEventListener('click', () => {
             if (historyIndex > 0) {
                 historyIndex--;
-                state = JSON.parse(historyStack[historyIndex]);
+                const snapshot = historyStack[historyIndex];
+                state = typeof structuredClone === 'function' ? structuredClone(snapshot) : JSON.parse(JSON.stringify(snapshot));
                 renderCharacter();
                 updateUndoRedoButtons();
                 // Refresh the grid to reflect selected active option
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderGrid(activeTab);
+                const activeTabBtn = tabsContainer.querySelector('.tab-btn.active');
+                if (activeTabBtn) {
+                    const activeTab = activeTabBtn.textContent.trim().toLowerCase();
+                    updateGridActiveStates(activeTab);
+                }
             }
         });
     }
@@ -510,11 +542,15 @@ document.addEventListener('DOMContentLoaded', () => {
         redoBtn.addEventListener('click', () => {
             if (historyIndex < historyStack.length - 1) {
                 historyIndex++;
-                state = JSON.parse(historyStack[historyIndex]);
+                const snapshot = historyStack[historyIndex];
+                state = typeof structuredClone === 'function' ? structuredClone(snapshot) : JSON.parse(JSON.stringify(snapshot));
                 renderCharacter();
                 updateUndoRedoButtons();
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderGrid(activeTab);
+                const activeTabBtn = tabsContainer.querySelector('.tab-btn.active');
+                if (activeTabBtn) {
+                    const activeTab = activeTabBtn.textContent.trim().toLowerCase();
+                    updateGridActiveStates(activeTab);
+                }
             }
         });
     }
@@ -553,5 +589,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render the initial skin color, tabs, and grid layout on page load
     renderCharacter(true);
-    renderGrid('skin color');
+    updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes']);
 });
