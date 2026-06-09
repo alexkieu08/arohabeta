@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Switch tabs depending on category selected
             if (btn.id === 'btn-body') {
-                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes']);
+                updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color']);
+            } else if (btn.id === 'btn-face') {
+                updateTabs(['Face Shape', 'Eyes']);
             } else {
                 // Return placeholder tabs for other sections
                 updateTabs(['Style 1', 'Style 2', 'Color Details']);
@@ -163,9 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTabs(tabNames) {
         const tabsContainer = document.querySelector('.tabs');
         tabsContainer.innerHTML = '';
+
+        const defaultTabName = tabNames.includes('Skin Color') ? 'Skin Color' : tabNames[0];
+
         tabNames.forEach((name, index) => {
             const button = document.createElement('button');
-            button.className = `tab-btn${index === 1 ? ' active' : ''}`; // Default to Skin Color (second tab)
+            button.className = `tab-btn${name === defaultTabName ? ' active' : ''}`;
             button.textContent = name;
             button.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -174,9 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             tabsContainer.appendChild(button);
         });
-        // Render Skin Color by default if it is available, otherwise the first tab
-        const defaultTab = tabNames.includes('Skin Color') ? 'skin color' : tabNames[0].toLowerCase();
-        renderGrid(defaultTab);
+
+        renderGrid(defaultTabName.toLowerCase());
     }
 
     // Save state to Undo/Redo history
