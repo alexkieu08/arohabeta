@@ -141,14 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
-    
+
     // Sidebar Button Selection
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     sidebarBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             sidebarBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             // Switch tabs depending on category selected
             if (btn.id === 'btn-body') {
                 updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes']);
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Render the character according to the state object
-    function renderCharacter(category = null, isLoad = false) {
+    function renderCharacter(isLoad = false) {
         // 1. Skin Color
         const skinPaths = document.querySelectorAll('.skin-path');
         skinPaths.forEach(path => {
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hairContainer = document.getElementById('hair-container');
         if (hairContainer) {
             hairContainer.innerHTML = hairOptions[state.hair].svg;
-            
+
             // Apply current hair color to the paths/circles in the hair container
             const hairElements = hairContainer.querySelectorAll('path, circle, ellipse, rect, polygon');
             hairElements.forEach(el => {
@@ -231,31 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
             smileContainer.innerHTML = smileOptions[state.smile].svg;
         }
 
-        // Trigger character feedback animations on user interaction
+        // Trigger character bounce feedback animation on user interaction
         if (!isLoad) {
-            // General bounce feedback
             characterWrapper.classList.remove('bounce-animation');
             void characterWrapper.offsetWidth; // Trigger reflow to restart animation
             characterWrapper.classList.add('bounce-animation');
-
-            // Category specific reactions
-            if (category) {
-                const reactionMap = {
-                    'skin color': 'shimmer-animation',
-                    'hair color': 'shimmer-animation',
-                    'body type': 'jump-animation',
-                    'hair': 'wiggle-animation',
-                    'face shape': 'wiggle-animation',
-                    'eyes': 'wiggle-animation'
-                };
-
-                const animationClass = reactionMap[category];
-                if (animationClass) {
-                    characterWrapper.classList.remove('shimmer-animation', 'wiggle-animation', 'jump-animation');
-                    void characterWrapper.offsetWidth;
-                    characterWrapper.classList.add(animationClass);
-                }
-            }
         }
     }
 
@@ -284,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.skinColor !== color.value) {
                         state.skinColor = color.value;
-                        renderCharacter('skin color');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -292,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 gridContainer.appendChild(item);
             });
-        } 
+        }
         else if (tabName === 'body type') {
             bodyTypes.forEach(type => {
                 const item = document.createElement('div');
@@ -321,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.bodyType !== type.id) {
                         state.bodyType = type.id;
-                        renderCharacter('body type');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -329,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 gridContainer.appendChild(item);
             });
-        } 
+        }
         else if (tabName === 'hair') {
             Object.keys(hairOptions).forEach(key => {
                 const item = document.createElement('div');
@@ -346,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <ellipse cx="100" cy="90" rx="60" ry="50" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
                     ${hairOptions[key].svg}
                 `;
-                
+
                 // Colorize the preview hair paths to the currently active hair color
                 const previewHairPaths = svgPreview.querySelectorAll('path, circle, ellipse');
                 previewHairPaths.forEach(el => {
@@ -369,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hair !== key) {
                         state.hair = key;
-                        renderCharacter('hair');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -392,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hairColor !== color.value) {
                         state.hairColor = color.value;
-                        renderCharacter('hair color');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -429,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.eyes !== key) {
                         state.eyes = key;
-                        renderCharacter('eyes');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -437,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 gridContainer.appendChild(item);
             });
-        } 
+        }
         else if (tabName === 'face shape') { // maps to expressions/mouth
             Object.keys(smileOptions).forEach(key => {
                 const item = document.createElement('div');
@@ -465,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.smile !== key) {
                         state.smile = key;
-                        renderCharacter('face shape');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -473,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 gridContainer.appendChild(item);
             });
-        } 
+        }
         else {
             // Placeholder grid items for other category buttons (Clothes, Accessories, Details)
             for (let i = 0; i < 8; i++) {
@@ -483,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.style.color = '#94a3b8';
                 item.style.fontSize = '24px';
                 item.textContent = '✨';
-                
+
                 const label = document.createElement('span');
                 label.style.position = 'absolute';
                 label.style.bottom = '4px';
@@ -491,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#94a3b8';
                 label.textContent = 'Soon';
                 item.appendChild(label);
-                
+
                 gridContainer.appendChild(item);
             }
         }
@@ -502,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             const selectedTab = btn.textContent.trim().toLowerCase();
             renderGrid(selectedTab);
         });
@@ -517,10 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex > 0) {
                 historyIndex--;
                 state = JSON.parse(historyStack[historyIndex]);
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter();
                 updateUndoRedoButtons();
                 // Refresh the grid to reflect selected active option
+                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
                 renderGrid(activeTab);
             }
         });
@@ -531,9 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex < historyStack.length - 1) {
                 historyIndex++;
                 state = JSON.parse(historyStack[historyIndex]);
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter();
                 updateUndoRedoButtons();
+                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
                 renderGrid(activeTab);
             }
         });
@@ -572,6 +552,6 @@ document.addEventListener('DOMContentLoaded', () => {
     saveHistory();
 
     // Render the initial skin color, tabs, and grid layout on page load
-    renderCharacter(null, true);
+    renderCharacter(true);
     renderGrid('skin color');
 });
