@@ -335,6 +335,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTabs(tabNames, activeTabName) {
         const tabsContainer = document.querySelector('.tabs');
         tabsContainer.innerHTML = '';
+
+        const defaultTabName = tabNames.includes('Skin Color') ? 'Skin Color' : tabNames[0];
+
         tabNames.forEach((name, index) => {
             const button = document.createElement('button');
             const isActive = activeTabName ? (name.toLowerCase() === activeTabName.toLowerCase()) : (index === 0);
@@ -357,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const targetTab = activeTabName || tabNames[0];
         renderGrid(targetTab.toLowerCase());
+        renderGrid(defaultTabName.toLowerCase());
     }
 
     // Save state to Undo/Redo history
@@ -371,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Render the character according to the state object
-    function renderCharacter(isLoad = false) {
+    function renderCharacter(category = null, isLoad = false) {
         // 1. Skin Color
         const skinPaths = document.querySelectorAll('.skin-path');
         skinPaths.forEach(path => {
@@ -475,9 +479,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Trigger character bounce feedback animation on user interaction
         if (!isLoad) {
+            // General bounce feedback
             characterWrapper.classList.remove('bounce-animation');
             void characterWrapper.offsetWidth; // Trigger reflow to restart animation
             characterWrapper.classList.add('bounce-animation');
+
+            // Category specific reactions
+            if (category) {
+                const reactionMap = {
+                    'skin color': 'shimmer-animation',
+                    'hair color': 'shimmer-animation',
+                    'body type': 'jump-animation',
+                    'hair': 'wiggle-animation',
+                    'face shape': 'wiggle-animation',
+                    'eyes': 'wiggle-animation'
+                };
+
+                const animationClass = reactionMap[category];
+                if (animationClass) {
+                    characterWrapper.classList.remove('shimmer-animation', 'wiggle-animation', 'jump-animation');
+                    void characterWrapper.offsetWidth;
+                    characterWrapper.classList.add(animationClass);
+                }
+            }
         }
     }
 
@@ -507,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.skinColor !== color.value) {
                         state.skinColor = color.value;
-                        renderCharacter();
+                        renderCharacter('skin color');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -630,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.bodyType !== type.id) {
                         state.bodyType = type.id;
-                        renderCharacter();
+                        renderCharacter('body type');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -673,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hair !== key) {
                         state.hair = key;
-                        renderCharacter();
+                        renderCharacter('hair');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -696,7 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hairColor !== color.value) {
                         state.hairColor = color.value;
-                        renderCharacter();
+                        renderCharacter('hair color');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -728,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.eyes !== key) {
                         state.eyes = key;
-                        renderCharacter();
+                        renderCharacter('eyes');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -759,7 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.smile !== key) {
                         state.smile = key;
-                        renderCharacter();
+                        renderCharacter('face shape');
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -811,10 +835,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex > 0) {
                 historyIndex--;
                 state = JSON.parse(historyStack[historyIndex]);
-                renderCharacter();
+                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
+                renderCharacter(activeTab);
                 updateUndoRedoButtons();
                 // Refresh the grid to reflect selected active option
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
                 renderGrid(activeTab);
             }
         });
@@ -825,9 +849,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex < historyStack.length - 1) {
                 historyIndex++;
                 state = JSON.parse(historyStack[historyIndex]);
-                renderCharacter();
-                updateUndoRedoButtons();
                 const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
+                renderCharacter(activeTab);
+                updateUndoRedoButtons();
                 renderGrid(activeTab);
             }
         });
