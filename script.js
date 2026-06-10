@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Current state of character customization
-    let state = {
+    // Default initial state
+    const defaultState = {
         skinColor: '#ffffff',
         bodyType: 'standard', // 'standard', 'chubby', 'tall', 'tiny'
         hair: 'bald',         // 'bald', 'fluffy', 'pigtails', 'spiky', 'bun', 'afro'
@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
         clothesColor: '#94a3b8',
         name: ''
     };
+
+    // Load state from localStorage or use default
+    const savedState = localStorage.getItem('studyBuddyCharacter');
+    let state = savedState ? JSON.parse(savedState) : { ...defaultState };
 
     // History stack for Undo/Redo
     const historyStack = [];
@@ -835,6 +839,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle name input to keep text bubble updated and adjust width perfectly
     if (nameInput) {
+        // Set initial value from state
+        nameInput.value = state.name || '';
+
         // Create hidden mirror span for measuring text width
         const mirror = document.createElement('span');
         mirror.style.position = 'absolute';
@@ -901,6 +908,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Screen Transition Logic
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
+            // Save state globally to localStorage
+            localStorage.setItem('studyBuddyCharacter', JSON.stringify(state));
+            console.log('Character data saved to localStorage:', state);
+
             customizerScreen.style.display = 'none';
             homeScreen.style.display = 'flex';
 
