@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTabs(['Style 1', 'Style 2', 'Color Details'], activeTab);
         } else {
             // Placeholder for other categories
-            updateTabs(['Soon ✨'], 'Soon ✨');
+            updateTabs(['Soon'], 'Soon');
         }
     }
 
@@ -335,9 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTabs(tabNames, activeTabName) {
         const tabsContainer = document.querySelector('.tabs');
         tabsContainer.innerHTML = '';
-
-        const defaultTabName = tabNames.includes('Skin Color') ? 'Skin Color' : tabNames[0];
-
         tabNames.forEach((name, index) => {
             const button = document.createElement('button');
             const isActive = activeTabName ? (name.toLowerCase() === activeTabName.toLowerCase()) : (index === 0);
@@ -360,7 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const targetTab = activeTabName || tabNames[0];
         renderGrid(targetTab.toLowerCase());
-        renderGrid(defaultTabName.toLowerCase());
     }
 
     // Save state to Undo/Redo history
@@ -375,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Render the character according to the state object
-    function renderCharacter(category = null, isLoad = false) {
+    function renderCharacter(isLoad = false) {
         // 1. Skin Color
         const skinPaths = document.querySelectorAll('.skin-path');
         skinPaths.forEach(path => {
@@ -479,29 +475,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Trigger character bounce feedback animation on user interaction
         if (!isLoad) {
-            // General bounce feedback
             characterWrapper.classList.remove('bounce-animation');
             void characterWrapper.offsetWidth; // Trigger reflow to restart animation
             characterWrapper.classList.add('bounce-animation');
-
-            // Category specific reactions
-            if (category) {
-                const reactionMap = {
-                    'skin color': 'shimmer-animation',
-                    'hair color': 'shimmer-animation',
-                    'body type': 'jump-animation',
-                    'hair': 'wiggle-animation',
-                    'face shape': 'wiggle-animation',
-                    'eyes': 'wiggle-animation'
-                };
-
-                const animationClass = reactionMap[category];
-                if (animationClass) {
-                    characterWrapper.classList.remove('shimmer-animation', 'wiggle-animation', 'jump-animation');
-                    void characterWrapper.offsetWidth;
-                    characterWrapper.classList.add(animationClass);
-                }
-            }
         }
     }
 
@@ -531,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.skinColor !== color.value) {
                         state.skinColor = color.value;
-                        renderCharacter('skin color');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -654,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.bodyType !== type.id) {
                         state.bodyType = type.id;
-                        renderCharacter('body type');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -697,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hair !== key) {
                         state.hair = key;
-                        renderCharacter('hair');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -720,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hairColor !== color.value) {
                         state.hairColor = color.value;
-                        renderCharacter('hair color');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -752,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.eyes !== key) {
                         state.eyes = key;
-                        renderCharacter('eyes');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -783,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.smile !== key) {
                         state.smile = key;
-                        renderCharacter('face shape');
+                        renderCharacter();
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -800,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.style.backgroundColor = '#f1f5f9';
                 item.style.color = '#94a3b8';
                 item.style.fontSize = '24px';
-                item.textContent = '✨';
+                item.textContent = '';
                 
                 const label = document.createElement('span');
                 label.style.position = 'absolute';
@@ -835,10 +811,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex > 0) {
                 historyIndex--;
                 state = JSON.parse(historyStack[historyIndex]);
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter();
                 updateUndoRedoButtons();
                 // Refresh the grid to reflect selected active option
+                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
                 renderGrid(activeTab);
             }
         });
@@ -849,9 +825,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (historyIndex < historyStack.length - 1) {
                 historyIndex++;
                 state = JSON.parse(historyStack[historyIndex]);
-                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter();
                 updateUndoRedoButtons();
+                const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
                 renderGrid(activeTab);
             }
         });
