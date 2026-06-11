@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { category: 'btn-body', tab: 'Skin Color' },
         { category: 'btn-body', tab: 'Hair' },
         { category: 'btn-body', tab: 'Hair Color' },
-        { category: 'btn-body', tab: 'Face Shape' },
-        { category: 'btn-body', tab: 'Eyes' },
+        { category: 'btn-face', tab: 'Face Shape' },
+        { category: 'btn-face', tab: 'Eyes' },
         { category: 'btn-clothes', tab: 'Style 1' },
         { category: 'btn-clothes', tab: 'Style 2' },
         { category: 'btn-clothes', tab: 'Color Details' }
@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeSidebarBtn = document.getElementById(categoryId);
         if (activeSidebarBtn) activeSidebarBtn.classList.add('active');
 
-        const targetTab = activeTab || (categoryId === 'btn-body' ? 'Body Type' : (categoryId === 'btn-clothes' ? 'Style 1' : 'Soon'));
+        const targetTab = activeTab || (
+            categoryId === 'btn-body' ? 'Body Type' :
+            (categoryId === 'btn-face' ? 'Face Shape' :
+            (categoryId === 'btn-clothes' ? 'Style 1' : 'Soon'))
+        );
 
         const newStepIndex = customizationSteps.findIndex(s => s.tab.toLowerCase() === targetTab.toLowerCase());
         if (newStepIndex !== -1) {
@@ -67,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (categoryId === 'btn-body') {
-            updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes'], targetTab);
+            updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color'], targetTab);
+        } else if (categoryId === 'btn-face') {
+            updateTabs(['Face Shape', 'Eyes'], targetTab);
         } else if (categoryId === 'btn-clothes') {
             updateTabs(['Style 1', 'Style 2', 'Color Details'], targetTab);
         } else {
