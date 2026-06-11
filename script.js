@@ -16,276 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyStack = [];
     let historyIndex = -1;
 
-    // Customization Option Definitions
-    const skinColors = [
-        { name: 'Default White', value: '#ffffff' },
-        { name: 'Warm Peach', value: '#ffd8be' },
-        { name: 'Soft Blush', value: '#ffcad4' },
-        { name: 'Sleek Cocoa', value: '#ddb892' },
-        { name: 'Deep Espresso', value: '#7f5539' },
-        { name: 'Lilac Dream', value: '#e8e5ff' },
-        { name: 'Mint Refresh', value: '#d8f3dc' },
-        { name: 'Sky Blue', value: '#e0f2fe' }
-    ];
-
-    const bodyTypes = [
-        {
-            id: 'standard',
-            name: 'Standard',
-            paths: {
-                body: 'M 70 140 Q 100 130 130 140 L 130 200 Q 100 210 70 200 Z',
-                lArm: 'M 75 145 Q 40 155 25 175 Q 40 190 75 165',
-                rArm: 'M 125 145 Q 160 115 175 125 Q 160 155 125 165',
-                lLeg: 'M 70 200 L 60 240 Q 70 250 80 240 L 90 200',
-                rLeg: 'M 130 200 L 140 240 Q 130 250 120 240 L 110 200'
-            },
-            headTranslate: 'translate(0, 0)',
-            svg: '<ellipse cx="30" cy="30" rx="20" ry="18" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
-        },
-        {
-            id: 'chubby',
-            name: 'Chubby',
-            paths: {
-                body: 'M 60 150 Q 100 140 140 150 L 140 200 Q 100 215 60 200 Z',
-                lArm: 'M 65 155 Q 30 165 15 185 Q 30 200 65 175',
-                rArm: 'M 135 155 Q 170 125 185 135 Q 170 165 135 175',
-                lLeg: 'M 70 200 L 60 240 Q 70 250 80 240 L 90 200',
-                rLeg: 'M 130 200 L 140 240 Q 130 250 120 240 L 110 200'
-            },
-            headTranslate: 'translate(0, 10)',
-            svg: '<ellipse cx="30" cy="30" rx="24" ry="14" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
-        },
-        {
-            id: 'tall',
-            name: 'Tall',
-            paths: {
-                body: 'M 75 120 Q 100 110 125 120 L 125 200 Q 100 210 75 200 Z',
-                lArm: 'M 80 125 Q 45 135 30 155 Q 45 170 80 145',
-                rArm: 'M 120 125 Q 155 95 170 105 Q 155 135 120 145',
-                lLeg: 'M 75 200 L 65 240 Q 75 250 85 240 L 95 200',
-                rLeg: 'M 125 200 L 135 240 Q 125 250 115 240 L 105 200'
-            },
-            headTranslate: 'translate(0, -20)',
-            svg: '<ellipse cx="30" cy="30" rx="16" ry="24" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
-        },
-        {
-            id: 'tiny',
-            name: 'Tiny',
-            paths: {
-                body: 'M 80 160 Q 100 155 120 160 L 120 200 Q 100 205 80 200 Z',
-                lArm: 'M 85 165 Q 60 170 50 185 Q 60 195 85 180',
-                rArm: 'M 115 165 Q 140 145 150 155 Q 140 175 115 170',
-                lLeg: 'M 80 200 L 75 230 Q 80 240 85 230 L 90 200',
-                rLeg: 'M 120 200 L 125 230 Q 120 240 115 230 L 110 200'
-            },
-            headTranslate: 'translate(0, 20)',
-            svg: '<ellipse cx="30" cy="30" rx="14" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>'
-        }
-    ];
-
-    const hairOptions = {
-        bald: {
-            name: 'Bald',
-            svg: ''
-        },
-        fluffy: {
-            name: 'Fluffy Bob',
-            svg: `<path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
-        },
-        pigtails: {
-            name: 'Pigtails',
-            svg: `<g fill="#94a3b8" stroke="#334155" stroke-width="2">
-                     <circle cx="33" cy="65" r="16"/>
-                     <circle cx="167" cy="65" r="16"/>
-                     <circle cx="38" cy="60" r="4" fill="#f43f5e" data-accessory="true"/>
-                     <circle cx="162" cy="60" r="4" fill="#f43f5e" data-accessory="true"/>
-                     <path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z"/>
-                   </g>`
-        },
-        spiky: {
-            name: 'Messy Spiky',
-            svg: `<path d="M 40 75 Q 35 25 60 30 Q 75 15 95 28 Q 115 12 135 30 Q 155 18 160 75 Q 140 60 120 62 Q 100 48 80 62 Q 60 60 40 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
-        },
-        bun: {
-            name: 'Space Buns',
-            svg: `<g fill="#94a3b8" stroke="#334155" stroke-width="2">
-                     <circle cx="50" cy="28" r="16"/>
-                     <circle cx="150" cy="28" r="16"/>
-                     <path d="M 40 75 Q 38 25 100 25 Q 162 25 160 75 Q 142 62 125 65 Q 100 52 80 62 Q 58 60 40 75 Z"/>
-                   </g>`
-        },
-        afro: {
-            name: 'Curly Afro',
-            svg: `<path d="M 45 75 Q 24 55 30 38 Q 40 12 70 18 Q 100 6 130 18 Q 160 12 170 38 Q 176 55 155 75 Q 140 68 130 70 Q 100 60 70 70 Q 60 68 45 75 Z" fill="#94a3b8" stroke="#334155" stroke-width="2"/>`
-        }
-    };
-
-    const hairColors = [
-        { name: 'Sleek Grey', value: '#94a3b8' },
-        { name: 'Dark Slate', value: '#1e293b' },
-        { name: 'Pastel Blonde', value: '#fef08a' },
-        { name: 'Ginger Auburn', value: '#d97706' },
-        { name: 'Soft Brown', value: '#854d0e' },
-        { name: 'Pastel Pink', value: '#f472b6' },
-        { name: 'Lavender Violet', value: '#c084fc' },
-        { name: 'Pastel Mint', value: '#a7f3d0' },
-        { name: 'Sky Blue', value: '#60a5fa' },
-        { name: 'Winter White', value: '#f8fafc' }
-    ];
-
-    const eyesOptions = {
-        curved: {
-            name: 'Happy Arc',
-            svg: `<path d="M 70 85 Q 75 75 85 85" fill="none" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>
-                  <path d="M 115 85 Q 125 75 130 85" fill="none" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>`
-        },
-        open: {
-            name: 'Excited',
-            svg: `<circle cx="78" cy="80" r="7.5" fill="#6b7280"/>
-                  <circle cx="122" cy="80" r="7.5" fill="#6b7280"/>`
-        },
-        sleepy: {
-            name: 'Sleepy',
-            svg: `<line x1="70" y1="80" x2="85" y2="80" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>
-                  <line x1="115" y1="80" x2="130" y2="80" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>`
-        },
-        wink: {
-            name: 'Wink',
-            svg: `<circle cx="78" cy="80" r="7.5" fill="#6b7280"/>
-                  <path d="M 115 80 Q 122 87 130 80" fill="none" stroke="#6b7280" stroke-width="5" stroke-linecap="round"/>`
-        },
-        heart: {
-            name: 'Lovestruck',
-            svg: `<g fill="#f43f5e" stroke="#f43f5e" stroke-width="1">
-                    <path d="M 77 71 C 74 65, 66 68, 69 76 L 77 84 L 85 76 C 88 68, 80 65, 77 71 Z" />
-                    <path d="M 121 71 C 118 65, 110 68, 113 76 L 121 84 L 129 76 C 132 68, 124 65, 121 71 Z" />
-                  </g>`
-        }
-    };
-
-    const smileOptions = {
-        standard: {
-            name: 'Happy',
-            svg: `<path d="M 90 110 Q 100 115 110 110" fill="none" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/>`
-        },
-        laughing: {
-            name: 'Laughing',
-            svg: `<path d="M 90 106 Q 100 122 110 106 Z" fill="#6b7280"/>`
-        },
-        flat: {
-            name: 'Neutral',
-            svg: `<line x1="90" y1="110" x2="110" y2="110" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/>`
-        },
-        surprise: {
-            name: 'Surprised',
-            svg: `<circle cx="100" cy="110" r="6" fill="none" stroke="#6b7280" stroke-width="4"/>`
-        },
-        cat: {
-            name: 'Cute Cat',
-            svg: `<path d="M 90 108 Q 95 113 100 108 Q 105 113 110 108" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>`
-        }
-    };
-
-    const clothesOptions = {
-        'style 1': [
-            { category: 'Basics', options: [
-                { id: 'none', name: 'None', body: '', lArm: '', rArm: '' },
-                {
-                    id: 'tshirt',
-                    name: 'Basic Tee',
-                    body: '<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>',
-                    lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
-                    rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
-                },
-                {
-                    id: 'tanktop',
-                    name: 'Tank Top',
-                    body: '<path d="M 80 140 Q 100 135 120 140 L 120 195 Q 100 205 80 195 Z"/><path d="M 80 140 Q 100 150 120 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.2" data-decorative="true"/>',
-                    lArm: '',
-                    rArm: ''
-                },
-                {
-                    id: 'croptop',
-                    name: 'Crop Top',
-                    body: '<path d="M 70 140 Q 100 130 130 140 L 130 170 Q 100 175 70 170 Z"/>',
-                    lArm: '<path d="M 75 145 Q 60 150 55 155 Q 60 165 75 160"/>',
-                    rArm: '<path d="M 125 145 Q 140 130 145 135 Q 140 145 125 150"/>'
-                }
-            ]},
-            { category: 'Cultural', options: [
-                {
-                    id: 'pacifica',
-                    name: 'Bula Shirt',
-                    body: `<path d="M 68 140 Q 100 125 132 140 L 132 195 Q 100 205 68 195 Z"/>
-                           <path d="M 68 140 L 85 155 L 100 145 L 115 155 L 132 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.4" data-decorative="true"/>
-                           <circle cx="85" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
-                           <circle cx="115" cy="170" r="3" fill="white" opacity="0.5" data-decorative="true"/>
-                           <circle cx="100" cy="185" r="3" fill="white" opacity="0.5" data-decorative="true"/>`,
-                    lArm: '<path d="M 75 145 Q 50 150 45 165 Q 55 175 75 168"/>',
-                    rArm: '<path d="M 125 145 Q 150 120 155 135 Q 145 145 125 152"/>'
-                }
-            ]}
-        ],
-        'style 2': [
-            { category: 'Outdoor', options: [
-                {
-                    id: 'hoodie',
-                    name: 'Comfy Hoodie',
-                    body: '<path d="M 65 140 Q 100 125 135 140 L 135 205 Q 100 215 65 205 Z"/><path d="M 85 140 Q 100 155 115 140" fill="none" stroke="#334155" stroke-width="2" opacity="0.3" data-decorative="true"/><path d="M 80 185 L 120 185 L 115 200 L 85 200 Z" fill="none" stroke="#334155" stroke-width="1" opacity="0.2" data-decorative="true"/>',
-                    lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
-                    rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
-                }
-            ]},
-            { category: 'Modern', options: [
-                {
-                    id: 'vneck',
-                    name: 'V-Neck',
-                    body: '<path d="M 70 140 L 90 140 L 100 155 L 110 140 L 130 140 L 130 185 Q 100 195 70 185 Z"/><path d="M 100 155 L 100 185" fill="none" stroke="#334155" stroke-width="1" opacity="0.1" data-decorative="true"/>',
-                    lArm: '<path d="M 75 145 Q 55 150 50 155 Q 55 165 75 160"/>',
-                    rArm: '<path d="M 125 145 Q 145 130 150 135 Q 145 145 125 150"/>'
-                },
-                {
-                    id: 'maori',
-                    name: 'Koru Tee',
-                    body: `<path d="M 70 140 Q 100 130 130 140 L 130 185 Q 100 195 70 185 Z"/>
-                           <path d="M 100 165 Q 110 165 110 175 Q 110 185 100 185 Q 90 185 90 175 Q 90 170 95 170" fill="none" stroke="white" stroke-width="2" opacity="0.4" data-decorative="true"/>
-                           <path d="M 85 140 Q 100 150 115 140" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.3" data-decorative="true"/>`,
-                    lArm: '<path d="M 75 145 Q 48 153 40 162 Q 50 172 75 165"/>',
-                    rArm: '<path d="M 125 145 Q 152 123 160 132 Q 150 142 125 165"/>'
-                },
-                {
-                    id: 'turtleneck',
-                    name: 'Turtleneck',
-                    body: '<path d="M 70 140 L 130 140 L 130 200 Q 100 210 70 200 Z"/><path d="M 85 125 L 115 125 L 115 140 L 85 140 Z" data-decorative="true"/>',
-                    lArm: '<path d="M 75 145 Q 40 155 25 175 Q 40 190 75 165"/>',
-                    rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
-                }
-            ]}
-        ]
-    };
-
-    const clothesColors = [
-        { name: 'Sleek Grey', value: '#94a3b8' },
-        { name: 'Dark Slate', value: '#1e293b' },
-        { name: 'Navy Blue', value: '#1e3a8a' },
-        { name: 'Forest Green', value: '#14532d' },
-        { name: 'Wine Red', value: '#7f1d1d' },
-        { name: 'Pastel Blonde', value: '#fef08a' },
-        { name: 'Ginger Auburn', value: '#d97706' },
-        { name: 'Soft Brown', value: '#854d0e' },
-        { name: 'Pastel Pink', value: '#f472b6' },
-        { name: 'Lavender Violet', value: '#c084fc' },
-        { name: 'Pastel Mint', value: '#a7f3d0' },
-        { name: 'Sky Blue', value: '#60a5fa' },
-        { name: 'Winter White', value: '#f8fafc' }
-    ];
-
     // DOM Elements
     const gridContainer = document.querySelector('.grid');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
     const finishBtn = document.querySelector('.finish-btn');
+    const startStudyingBtn = document.querySelector('.home-btn.primary');
     const editBackBtn = document.querySelector('#edit-back-btn');
     const customizerScreen = document.getElementById('customizer-screen');
     const homeScreen = document.getElementById('home-screen');
@@ -321,26 +58,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeSidebarBtn = document.getElementById(categoryId);
         if (activeSidebarBtn) activeSidebarBtn.classList.add('active');
 
+        const targetTab = activeTab || (categoryId === 'btn-body' ? 'Body Type' : (categoryId === 'btn-clothes' ? 'Style 1' : 'Soon'));
+
+        const newStepIndex = customizationSteps.findIndex(s => s.tab.toLowerCase() === targetTab.toLowerCase());
+        if (newStepIndex !== -1) {
+            currentStepIndex = newStepIndex;
+            updateNavButtons();
+        }
+
         if (categoryId === 'btn-body') {
-            updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes'], activeTab);
+            updateTabs(['Body Type', 'Skin Color', 'Hair', 'Hair Color', 'Face Shape', 'Eyes'], targetTab);
         } else if (categoryId === 'btn-clothes') {
-            updateTabs(['Style 1', 'Style 2', 'Color Details'], activeTab);
+            updateTabs(['Style 1', 'Style 2', 'Color Details'], targetTab);
         } else {
-            // Placeholder for other categories
-            updateTabs(['Soon ✨'], 'Soon ✨');
+            updateTabs(['Soon'], 'Soon');
         }
     }
 
-    // Function to dynamically rewrite tabs when switching categories
     function updateTabs(tabNames, activeTabName) {
         const tabsContainer = document.querySelector('.tabs');
         tabsContainer.innerHTML = '';
 
-        const defaultTabName = tabNames.includes('Skin Color') ? 'Skin Color' : tabNames[0];
-
-        tabNames.forEach((name, index) => {
+        tabNames.forEach((name) => {
             const button = document.createElement('button');
-            const isActive = activeTabName ? (name.toLowerCase() === activeTabName.toLowerCase()) : (index === 0);
+            const isActive = name.toLowerCase() === activeTabName.toLowerCase();
             button.className = `tab-btn${isActive ? ' active' : ''}`;
             button.textContent = name;
             button.addEventListener('click', () => {
@@ -348,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active');
                 renderGrid(name.toLowerCase());
 
-                // Update currentStepIndex if user manually clicks a tab
                 const newStepIndex = customizationSteps.findIndex(s => s.tab.toLowerCase() === name.toLowerCase());
                 if (newStepIndex !== -1) {
                     currentStepIndex = newStepIndex;
@@ -358,151 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
             tabsContainer.appendChild(button);
         });
 
-        const targetTab = activeTabName || tabNames[0];
-        renderGrid(targetTab.toLowerCase());
-        renderGrid(defaultTabName.toLowerCase());
+        renderGrid(activeTabName.toLowerCase());
     }
 
-    // Save state to Undo/Redo history
     function saveHistory() {
-        // Remove forward history if we made an edit after undoing
         if (historyIndex < historyStack.length - 1) {
             historyStack.splice(historyIndex + 1);
         }
         historyStack.push(JSON.stringify(state));
         historyIndex = historyStack.length - 1;
         updateUndoRedoButtons();
-    }
-
-    // Render the character according to the state object
-    function renderCharacter(category = null, isLoad = false) {
-        // 1. Skin Color
-        const skinPaths = document.querySelectorAll('.skin-path');
-        skinPaths.forEach(path => {
-            path.style.fill = state.skinColor;
-        });
-
-        // 2. Body Type
-        const bodyTypeConfig = bodyTypes.find(t => t.id === state.bodyType);
-        if (bodyTypeConfig) {
-            // Update paths instead of stretching with transform
-            const bodyPath = document.getElementById('body-path');
-            const lArmPath = document.getElementById('l-arm-path');
-            const rArmPath = document.getElementById('r-arm-path');
-            const lLegPath = document.getElementById('l-leg-path');
-            const rLegPath = document.getElementById('r-leg-path');
-            const headFaceGroup = document.getElementById('head-face-group');
-            const rArmGroup = document.getElementById('r-arm-group');
-
-            if (bodyPath) bodyPath.setAttribute('d', bodyTypeConfig.paths.body);
-            if (lArmPath) lArmPath.setAttribute('d', bodyTypeConfig.paths.lArm);
-            if (rArmPath) rArmPath.setAttribute('d', bodyTypeConfig.paths.rArm);
-            if (lLegPath) lLegPath.setAttribute('d', bodyTypeConfig.paths.lLeg);
-            if (rLegPath) rLegPath.setAttribute('d', bodyTypeConfig.paths.rLeg);
-
-            // Adjust head and face position
-            if (headFaceGroup) headFaceGroup.setAttribute('transform', bodyTypeConfig.headTranslate);
-
-            // Adjust right arm group origin for animation
-            if (rArmGroup && bodyTypeConfig.id === 'standard') rArmGroup.setAttribute('transform-origin', '125 155');
-            if (rArmGroup && bodyTypeConfig.id === 'chubby') rArmGroup.setAttribute('transform-origin', '135 155');
-            if (rArmGroup && bodyTypeConfig.id === 'tall') rArmGroup.setAttribute('transform-origin', '120 125');
-            if (rArmGroup && bodyTypeConfig.id === 'tiny') rArmGroup.setAttribute('transform-origin', '115 165');
-        }
-
-        // 3. Hair (with dynamic hair coloring support)
-        const hairContainer = document.getElementById('hair-container');
-        if (hairContainer) {
-            hairContainer.innerHTML = hairOptions[state.hair].svg;
-            
-            // Apply current hair color to the paths/circles in the hair container
-            const hairElements = hairContainer.querySelectorAll('path, circle, ellipse, rect, polygon');
-            hairElements.forEach(el => {
-                if (el.getAttribute('data-accessory') !== 'true') {
-                    el.style.fill = state.hairColor;
-                }
-            });
-        }
-
-        // 4. Eyes
-        const eyesContainer = document.getElementById('eyes-container');
-        if (eyesContainer && eyesOptions[state.eyes]) {
-            eyesContainer.innerHTML = eyesOptions[state.eyes].svg;
-        }
-
-        // 5. Smile
-        const smileContainer = document.getElementById('smile-container');
-        if (smileContainer && smileOptions[state.smile]) {
-            smileContainer.innerHTML = smileOptions[state.smile].svg;
-        }
-
-        // 6. Clothes
-        const bodyClothes = document.getElementById('clothes-body-container');
-        const lArmClothes = document.getElementById('clothes-l-arm-container');
-        const rArmClothes = document.getElementById('clothes-r-arm-container');
-        const lLegClothes = document.getElementById('clothes-l-leg-container');
-        const rLegClothes = document.getElementById('clothes-r-leg-container');
-
-        if (bodyClothes && lArmClothes && rArmClothes && lLegClothes && rLegClothes) {
-            bodyClothes.innerHTML = '';
-            lArmClothes.innerHTML = '';
-            rArmClothes.innerHTML = '';
-            lLegClothes.innerHTML = '';
-            rLegClothes.innerHTML = '';
-
-            if (state.clothes !== 'none') {
-                let selectedClothes = null;
-                Object.values(clothesOptions).forEach(styleList => {
-                    const found = styleList.find(group => group.options.some(c => c.id === state.clothes));
-                    if (found) {
-                        selectedClothes = found.options.find(c => c.id === state.clothes);
-                    }
-                });
-
-                if (selectedClothes) {
-                    bodyClothes.innerHTML = selectedClothes.body;
-                    lArmClothes.innerHTML = selectedClothes.lArm;
-                    rArmClothes.innerHTML = selectedClothes.rArm;
-                    // Legs could be added here if options existed
-
-                    [bodyClothes, lArmClothes, rArmClothes, lLegClothes, rLegClothes].forEach(container => {
-                        container.querySelectorAll('path, circle').forEach(el => {
-                            if (el.getAttribute('data-decorative') !== 'true') {
-                                el.style.fill = state.clothesColor;
-                                el.style.stroke = '#334155';
-                            }
-                        });
-                    });
-                }
-            }
-        }
-
-        // Trigger character bounce feedback animation on user interaction
-        if (!isLoad) {
-            // General bounce feedback
-            characterWrapper.classList.remove('bounce-animation');
-            void characterWrapper.offsetWidth; // Trigger reflow to restart animation
-            characterWrapper.classList.add('bounce-animation');
-
-            // Category specific reactions
-            if (category) {
-                const reactionMap = {
-                    'skin color': 'shimmer-animation',
-                    'hair color': 'shimmer-animation',
-                    'body type': 'jump-animation',
-                    'hair': 'wiggle-animation',
-                    'face shape': 'wiggle-animation',
-                    'eyes': 'wiggle-animation'
-                };
-
-                const animationClass = reactionMap[category];
-                if (animationClass) {
-                    characterWrapper.classList.remove('shimmer-animation', 'wiggle-animation', 'jump-animation');
-                    void characterWrapper.offsetWidth;
-                    characterWrapper.classList.add(animationClass);
-                }
-            }
-        }
     }
 
     function updateUndoRedoButtons() {
@@ -512,10 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (redoBtn) redoBtn.style.opacity = historyIndex < historyStack.length - 1 ? '1' : '0.3';
     }
 
-    // Function to render the Grid based on active tab
     function renderGrid(tabName) {
-        gridContainer.innerHTML = ''; // Clear current grid
-        gridContainer.style.display = 'grid'; // Reset to grid default
+        gridContainer.innerHTML = '';
+        gridContainer.style.display = 'grid';
 
         if (tabName === 'skin color') {
             skinColors.forEach(color => {
@@ -531,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.skinColor !== color.value) {
                         state.skinColor = color.value;
-                        renderCharacter('skin color');
+                        renderCharacter(state, { category: 'skin color', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -541,8 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } 
         else if (tabName === 'style 1' || tabName === 'style 2') {
-            // Apply category headings and grid structure
-            gridContainer.style.display = 'block'; // Change from grid to block for sections
+            gridContainer.style.display = 'block';
 
             clothesOptions[tabName].forEach(group => {
                 const section = document.createElement('div');
@@ -554,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(heading);
 
                 const sectionGrid = document.createElement('div');
-                sectionGrid.className = 'grid'; // Nested grid
+                sectionGrid.className = 'grid';
                 sectionGrid.style.marginTop = '10px';
                 sectionGrid.style.marginBottom = '20px';
 
@@ -595,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.addEventListener('click', () => {
                         if (state.clothes !== option.id) {
                             state.clothes = option.id;
-                            renderCharacter();
+                            renderCharacter(state, { characterWrapper });
                             saveHistory();
                             document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                             item.classList.add('active');
@@ -622,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.clothesColor !== color.value) {
                         state.clothesColor = color.value;
-                        renderCharacter();
+                        renderCharacter(state, { characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -637,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.className = 'grid-item';
                 if (state.bodyType === type.id) item.classList.add('active');
 
-                // Render small preview SVG of shape
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '0 0 60 60');
                 svgPreview.setAttribute('width', '100%');
@@ -645,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 svgPreview.innerHTML = type.svg;
                 item.appendChild(svgPreview);
 
-                // Label below shape
                 const label = document.createElement('span');
                 label.className = 'preview-label';
                 label.textContent = type.name;
@@ -654,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.bodyType !== type.id) {
                         state.bodyType = type.id;
-                        renderCharacter('body type');
+                        renderCharacter(state, { category: 'body type', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -669,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.className = 'grid-item';
                 if (state.hair === key) item.classList.add('active');
 
-                // Render visual preview: dummy head + hair styled in current hair color
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '35 20 130 65');
                 svgPreview.setAttribute('width', '100%');
@@ -680,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${hairOptions[key].svg}
                 `;
                 
-                // Colorize the preview hair paths to the currently active hair color
                 const previewHairPaths = svgPreview.querySelectorAll('path, circle, ellipse');
                 previewHairPaths.forEach(el => {
                     if (el.getAttribute('data-accessory') !== 'true') {
@@ -697,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hair !== key) {
                         state.hair = key;
-                        renderCharacter('hair');
+                        renderCharacter(state, { category: 'hair', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -720,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.hairColor !== color.value) {
                         state.hairColor = color.value;
-                        renderCharacter('hair color');
+                        renderCharacter(state, { category: 'hair color', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -735,7 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.className = 'grid-item';
                 if (state.eyes === key) item.classList.add('active');
 
-                // Render eyes SVG snippet as preview
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '60 68 80 25');
                 svgPreview.setAttribute('width', '90%');
@@ -752,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.eyes !== key) {
                         state.eyes = key;
-                        renderCharacter('eyes');
+                        renderCharacter(state, { category: 'eyes', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -761,13 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridContainer.appendChild(item);
             });
         } 
-        else if (tabName === 'face shape') { // maps to expressions/mouth
+        else if (tabName === 'face shape') {
             Object.keys(smileOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
                 if (state.smile === key) item.classList.add('active');
 
-                // Render smile SVG snippet as preview
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '80 98 40 25');
                 svgPreview.setAttribute('width', '80%');
@@ -783,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     if (state.smile !== key) {
                         state.smile = key;
-                        renderCharacter('face shape');
+                        renderCharacter(state, { category: 'face shape', characterWrapper });
                         saveHistory();
                         document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
                         item.classList.add('active');
@@ -793,14 +390,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } 
         else {
-            // Placeholder grid items for other category buttons (Clothes, Accessories, Details)
             for (let i = 0; i < 8; i++) {
                 const item = document.createElement('div');
                 item.className = 'grid-item placeholder-item';
                 item.style.backgroundColor = '#f1f5f9';
                 item.style.color = '#94a3b8';
                 item.style.fontSize = '24px';
-                item.textContent = '✨';
+                item.textContent = '...';
                 
                 const label = document.createElement('span');
                 label.style.position = 'absolute';
@@ -815,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Handle Tab Buttons (Initial load tabs bindings)
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -826,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Undo/Redo Buttons
     const undoBtn = document.querySelector('.undo-btn');
     const redoBtn = document.querySelector('.redo-btn');
 
@@ -836,9 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 historyIndex--;
                 state = JSON.parse(historyStack[historyIndex]);
                 const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter(state, { category: activeTab, characterWrapper });
                 updateUndoRedoButtons();
-                // Refresh the grid to reflect selected active option
                 renderGrid(activeTab);
             }
         });
@@ -850,16 +443,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 historyIndex++;
                 state = JSON.parse(historyStack[historyIndex]);
                 const activeTab = document.querySelector('.tab-btn.active').textContent.trim().toLowerCase();
-                renderCharacter(activeTab);
+                renderCharacter(state, { category: activeTab, characterWrapper });
                 updateUndoRedoButtons();
                 renderGrid(activeTab);
             }
         });
     }
 
-    // Handle name input to keep text bubble updated and adjust width perfectly
     if (nameInput) {
-        // Create hidden mirror span for measuring text width
         const mirror = document.createElement('span');
         mirror.style.position = 'absolute';
         mirror.style.visibility = 'hidden';
@@ -873,7 +464,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const resizeInput = () => {
             const val = nameInput.value || nameInput.placeholder || '___';
             mirror.textContent = val;
-            // Add a small safety padding to prevent scrollbars or clipping
             nameInput.style.width = (mirror.offsetWidth + 6) + 'px';
         };
 
@@ -882,15 +472,12 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeInput();
         });
 
-        // Initial run to size the placeholder correctly
         resizeInput();
     }
 
     function updateNavButtons() {
-        // Visibility of Back button
         prevBtn.style.visibility = currentStepIndex === 0 ? 'hidden' : 'visible';
 
-        // Next vs Finish button
         if (currentStepIndex === customizationSteps.length - 1) {
             nextBtn.style.display = 'none';
             finishBtn.style.display = 'block';
@@ -922,19 +509,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Screen Transition Logic
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
             customizerScreen.style.display = 'none';
             homeScreen.style.display = 'flex';
 
-            // Update name display
             homeNameDisplay.textContent = state.name || 'Buddy';
 
-            // Clone character to home screen
             homeCharacterDisplay.innerHTML = '';
             const characterClone = characterWrapper.cloneNode(true);
             homeCharacterDisplay.appendChild(characterClone);
+
+            // Save state to localStorage for the next page
+            localStorage.setItem('characterState', JSON.stringify(state));
+        });
+    }
+
+    if (startStudyingBtn) {
+        startStudyingBtn.addEventListener('click', () => {
+            // Final save before navigation
+            localStorage.setItem('characterState', JSON.stringify(state));
+            window.location.href = 'home.html';
         });
     }
 
@@ -945,14 +540,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Save initial state into history
     saveHistory();
-
-    // Render the initial skin color, tabs, and grid layout on page load
-    renderCharacter(true);
-    // Initialize to first step
-    const initialStep = customizationSteps[0];
+    renderCharacter(state, { isLoad: true, characterWrapper });
     currentStepIndex = 0;
+    const initialStep = customizationSteps[currentStepIndex];
     selectCategory(initialStep.category, initialStep.tab);
     updateNavButtons();
 });
