@@ -242,8 +242,8 @@ const clothesOptions = {
                 rArm: '<path d="M 125 145 Q 160 115 175 125 Q 160 155 125 165"/>'
             }
         ]
-    ]
-};
+    }
+]};
 
 const clothesColors = [
     { name: 'Sleek Grey', value: '#94a3b8' },
