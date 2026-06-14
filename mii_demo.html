@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mii Avatar Animation Demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="sprite_gen.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #3182ce;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2b6cb0;
+        }
+        button.active {
+            background-color: #ca8a04;
+        }
+        h1 { color: #1765a3; margin-bottom: 5px; }
+        p { color: #4a5568; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        const MiiAvatar = ({ spriteSheetUrl, animationState = 'idle' }) => {
+            const mountRef = useRef(null);
+
+            useEffect(() => {
+                const width = 400;
+                const height = 400;
+
+                // 1. Setup Scene
+                const scene = new THREE.Scene();
+                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+                camera.position.z = 1;
+
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(width, height);
+                mountRef.current.appendChild(renderer.domElement);
+
+                // 2. Load Sprite Sheet
+                const loader = new THREE.TextureLoader();
+                const texture = loader.load(spriteSheetUrl);
+
+                const cols = 4;
+                const rows = 4;
+                texture.repeat.set(1 / cols, 1 / rows);
+                texture.magFilter = THREE.NearestFilter;
+
+                const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+                const geometry = new THREE.PlaneGeometry(1.6, 1.6);
+                const sprite = new THREE.Mesh(geometry, material);
+                scene.add(sprite);
+
+                // 3. Animation Logic
+                let frame = 0;
+                let timer = 0;
+                const frameDuration = 0.15;
+
+                const animate = (time) => {
+                    const delta = 0.016;
+                    timer += delta;
+
+                    if (timer >= frameDuration) {
+                        timer = 0;
+                        frame = (frame + 1) % cols;
+                        texture.offset.x = frame / cols;
+                    }
+
+                    switch (animationState) {
+                        case 'talking':
+                            texture.offset.y = (rows - 2) / rows;
+                            sprite.position.y = 0;
+                            break;
+                        case 'happy':
+                            texture.offset.y = (rows - 3) / rows;
+                            sprite.position.y = Math.abs(Math.sin(time * 0.008)) * 0.2;
+                            break;
+                        case 'idle':
+                        default:
+                            texture.offset.y = (rows - 1) / rows;
+                            sprite.position.y = 0;
+                            break;
+                    }
+
+                    renderer.render(scene, camera);
+                    requestAnimationFrame(animate);
+                };
+
+                const animationId = requestAnimationFrame(animate);
+
+                return () => {
+                    cancelAnimationFrame(animationId);
+                    if (mountRef.current) {
+                        mountRef.current.removeChild(renderer.domElement);
+                    }
+                    geometry.dispose();
+                    material.dispose();
+                    texture.dispose();
+                };
+            }, [spriteSheetUrl, animationState]);
+
+            return (
+                <div
+                    ref={mountRef}
+                    style={{
+                        width: '400px',
+                        height: '400px',
+                        background: 'radial-gradient(circle, #fff 0%, #e0f2fe 100%)',
+                        borderRadius: '50%',
+                        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                        overflow: 'hidden'
+                    }}
+                />
+            );
+        };
+
+        const App = () => {
+            const [state, setState] = useState('idle');
+            const [spriteUrl, setSpriteUrl] = useState('');
+
+            useEffect(() => {
+                setSpriteUrl(window.generateMiiSpriteSheet());
+            }, []);
+
+            if (!spriteUrl) return <div>Loading Sprite Sheet...</div>;
+
+            return (
+                <>
+                    <h1>Mii Animator</h1>
+                    <p>Testing React + Three.js Sprite Animations</p>
+                    <MiiAvatar spriteSheetUrl={spriteUrl} animationState={state} />
+                    <div className="controls">
+                        {['idle', 'talking', 'happy'].map(s => (
+                            <button
+                                key={s}
+                                className={state === s ? 'active' : ''}
+                                onClick={() => setState(s)}
+                            >
+                                {s.charAt(0).toUpperCase() + s.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                </>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
