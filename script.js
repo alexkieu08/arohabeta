@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // DOM Elements
     const gridContainer = document.querySelector('.grid');
-    const tabBtns = document.querySelectorAll('.tab-btn');
     const characterWrapper = document.querySelector('.character-wrapper');
     const nameInput = document.querySelector('.name-input');
     const finishBtn = document.querySelector('.finish-btn');
@@ -105,14 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (historyIndex < historyStack.length - 1) {
             historyStack.splice(historyIndex + 1);
         }
-        historyStack.push(JSON.stringify(state));
+        // Use structuredClone if available for better performance than JSON.stringify
+        const snapshot = typeof structuredClone === 'function' ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+        historyStack.push(snapshot);
         historyIndex = historyStack.length - 1;
         updateUndoRedoButtons();
     }
 
     function updateUndoRedoButtons() {
-        const undoBtn = document.querySelector('.undo-btn');
-        const redoBtn = document.querySelector('.redo-btn');
         if (undoBtn) undoBtn.style.opacity = historyIndex > 0 ? '1' : '0.3';
         if (redoBtn) redoBtn.style.opacity = historyIndex < historyStack.length - 1 ? '1' : '0.3';
     }
@@ -125,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             skinColors.forEach(color => {
                 const item = document.createElement('div');
                 item.className = 'grid-item color-swatch-item';
-                if (state.skinColor === color.value) item.classList.add('active');
+                item.dataset.value = color.value;
 
                 const circle = document.createElement('div');
                 circle.className = 'color-circle';
@@ -235,10 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         else if (tabName === 'body type') {
-            bodyTypes.forEach(type => {
+            Object.keys(bodyTypes).forEach(id => {
+                const type = bodyTypes[id];
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.bodyType === type.id) item.classList.add('active');
+                item.dataset.value = id;
 
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '0 0 60 60');
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.keys(hairOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.hair === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '35 20 130 65');
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hairColors.forEach(color => {
                 const item = document.createElement('div');
                 item.className = 'grid-item color-swatch-item';
-                if (state.hairColor === color.value) item.classList.add('active');
+                item.dataset.value = color.value;
 
                 const circle = document.createElement('div');
                 circle.className = 'color-circle';
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.keys(eyesOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.eyes === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '60 68 80 25');
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.keys(smileOptions).forEach(key => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if (state.smile === key) item.classList.add('active');
+                item.dataset.value = key;
 
                 const svgPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svgPreview.setAttribute('viewBox', '80 98 40 25');
@@ -405,10 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.style.color = '#94a3b8';
                 label.textContent = 'Soon';
                 item.appendChild(label);
-                
-                gridContainer.appendChild(item);
+                fragment.appendChild(item);
             }
         }
+
+        gridCache.set(tabName, fragment);
+        gridContainer.innerHTML = '';
+        gridContainer.appendChild(gridCache.get(tabName).cloneNode(true));
+        updateGridActiveStates(tabName);
     }
 
     tabBtns.forEach(btn => {
@@ -419,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedTab = btn.textContent.trim().toLowerCase();
             renderGrid(selectedTab);
         });
-    });
+    }
 
     const undoBtn = document.querySelector('.undo-btn');
     const redoBtn = document.querySelector('.redo-btn');
